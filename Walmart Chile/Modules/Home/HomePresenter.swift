@@ -8,6 +8,7 @@
 import UIKit
 
 protocol HomePresenterDelegate {
+    var productCellDelegate: ProductCellDelegate { get }
     var cart: Cart { get }
     func viewDidLoad()
     func loadProducts(from category: String?)
@@ -29,29 +30,30 @@ final class HomePresenter {
     private var delegate: HomeViewControllerDelegate?
     private var _cart: Cart
     private var networkManager: HomeNetworkManager
-    private var productsDataSource: ProductsDataSource? {
+    private var _products: [Product] {
         didSet {
-            guard let productsDataSource else { return }
-            delegate?.setDataSource(productsDataSource)
+            delegate?.updateDataSource()
         }
     }
     
     required init(cart: Cart) {
         _cart = cart
-        self.networkManager = HomeNetworkManager()
+        networkManager = HomeNetworkManager()
+        _products = []
     }
 }
 
 extension HomePresenter: HomePresenterDelegate {
     var cart: Cart { _cart }
+    var productCellDelegate: ProductCellDelegate { self }
     
     func loadProducts(from category: String? = nil) {
-        self.productsDataSource = ProductsDataSource(products: [], isLoading: true, delegate: self)
+        _products = []
         networkManager.getProducts(from: category) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let products):
-                self.productsDataSource = ProductsDataSource(products: products, delegate: self)
+                self._products = reorder(products)
             case .failure(let error):
                 // TODO: show error
                 debugPrint(error)
@@ -66,6 +68,8 @@ extension HomePresenter: HomePresenterDelegate {
 }
 
 extension HomePresenter: ProductCellDelegate {
+    var products: [Product] { _products }
+    
     func increase(product: Product?, animatedImage: UIImageView) {
         guard let product, _cart.updateAllowed else { return }
         if _cart.quantityOf(product: product) == 0 {
@@ -109,5 +113,17 @@ extension HomePresenter: ProductCellDelegate {
                 debugPrint(error)
             }
         }
+    }
+}
+
+private extension HomePresenter {
+    func reorder(_ products: [Product]) -> [Product] {
+        var prods = products
+        if let featuredProduct = prods.max(by: { $0.rating.rate * $0.rating.count < $1.rating.rate * $1.rating.count }),
+            let index = prods.firstIndex(of: featuredProduct) {
+            let featuredProduct = prods.remove(at: index)
+            prods.insert(featuredProduct, at: 0)
+        }
+        return prods
     }
 }

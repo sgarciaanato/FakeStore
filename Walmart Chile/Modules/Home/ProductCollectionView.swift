@@ -8,20 +8,60 @@
 import UIKit
 
 final class ProductCollectionView: UICollectionView {
-    override var dataSource: UICollectionViewDataSource? {
-        didSet {
-            self.collectionViewLayout = createCompositionalLayout()
-        }
+    enum ProductSection {
+        case featured
+        case main
     }
     
-    required init() {
+    let productCellDelegate: ProductCellDelegate
+    var productsDataSource: UICollectionViewDiffableDataSource<ProductSection, Product>?
+    
+    required init(productCellDelegate: ProductCellDelegate) {
+        self.productCellDelegate = productCellDelegate
         super.init(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+        collectionViewLayout = createCompositionalLayout()
         register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.identifier)
         register(FeaturedProductCell.self, forCellWithReuseIdentifier: FeaturedProductCell.identifier)
+        self.productsDataSource = UICollectionViewDiffableDataSource(collectionView: self, cellProvider: { collectionView, indexPath, itemIdentifier in
+            if indexPath.section == 0 {
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedProductCell.identifier, for: indexPath) as? FeaturedProductCell else { return UICollectionViewCell() }
+                cell.delegate = productCellDelegate
+                let product = productCellDelegate.products[0]
+                cell.setProduct(product, quantityInCart: productCellDelegate.quantityOf(product: product))
+                return cell
+            }
+            
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.identifier, for: indexPath) as? ProductCell else { return UICollectionViewCell() }
+            cell.delegate = productCellDelegate
+            let product = productCellDelegate.products[indexPath.row + 1]
+            cell.setProduct(product, quantityInCart: productCellDelegate.quantityOf(product: product))
+            return cell
+        })
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension ProductCollectionView {
+    func updateDataSource() {
+        var products = productCellDelegate.products
+        var snapshot = NSDiffableDataSourceSnapshot<ProductSection, Product>()
+        guard products.count > 1 else {
+            snapshot.appendSections([.featured])
+            snapshot.appendItems(products)
+            return
+        }
+        
+        let featuredProduct = products.removeFirst()
+        debugPrint(featuredProduct.title)
+        snapshot.appendSections([.featured])
+        snapshot.appendItems([featuredProduct])
+        snapshot.appendSections([.main])
+        snapshot.appendItems(products)
+        
+        productsDataSource?.apply(snapshot, animatingDifferences: true)
     }
 }
 

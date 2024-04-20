@@ -12,7 +12,7 @@ protocol CategorySelectionDelegate {
 }
 
 protocol HomeViewControllerDelegate {
-    func setDataSource(_ dataSource: ProductsDataSource)
+    func updateDataSource()
     func flyOverToCart(imageView: UIImageView, completion: @escaping ()->())
     func open(_ product: Product)
 }
@@ -22,7 +22,7 @@ final class HomeViewController: UIViewController {
     let cartButton: BadgeButton
     
     lazy var homeView: HomeView = {
-        let view = HomeView()
+        let view = HomeView(productCellDelegate: presenter.productCellDelegate)
         return view
     }()
     
@@ -80,8 +80,8 @@ extension HomeViewController: HomeViewControllerDelegate {
         present(productDetailPresenter.viewController, animated: true, completion: nil)
     }
     
-    func setDataSource(_ dataSource: ProductsDataSource) {
-        homeView.setDataSource(dataSource)
+    func updateDataSource() {
+        homeView.updateDataSource()
     }
     
     func flyOverToCart(imageView: UIImageView, completion: @escaping ()->()) {

@@ -8,13 +8,16 @@
 import UIKit
 
 final class HomeView: UIView {
+    var productCellDelegate: ProductCellDelegate
+    
     lazy var collectionView: ProductCollectionView = {
-        let collectionView = ProductCollectionView()
+        let collectionView = ProductCollectionView(productCellDelegate: productCellDelegate)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
-    required init() {
+    required init(productCellDelegate: ProductCellDelegate) {
+        self.productCellDelegate = productCellDelegate
         super.init(frame: .zero)
         configureViews()
     }
@@ -42,10 +45,10 @@ private extension HomeView {
 }
 
 extension HomeView {
-    func setDataSource(_ dataSource: ProductsDataSource) {
+    func updateDataSource() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            self.collectionView.dataSource = dataSource
+            self.collectionView.updateDataSource()
         }
     }
 }
