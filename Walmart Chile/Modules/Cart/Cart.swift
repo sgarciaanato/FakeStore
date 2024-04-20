@@ -13,11 +13,13 @@ extension Notification.Name {
 
 final class Cart {
     var updateAllowed: Bool
+    var updatedItems: [Product]
     var items: [Product: Int]
     var button: BadgeButton?
     
     required init() {
         updateAllowed = true
+        updatedItems = []
         guard let data = UserDefaults.standard.data(forKey: "CartItems") else {
             items = [:]
             return
@@ -50,6 +52,9 @@ extension Cart {
     }
     
     func increase(product: Product) {
+        if !updatedItems.contains(product) {
+            updatedItems.append(product)
+        }
         if items[product] == nil {
             items[product] = 1
         } else {
@@ -59,6 +64,9 @@ extension Cart {
     }
     
     func decrease(product: Product) {
+        if !updatedItems.contains(product) {
+            updatedItems.append(product)
+        }
         if quantityOf(product: product) == 1{
             items[product] = nil
         } else {
@@ -75,7 +83,8 @@ extension Cart {
         } catch(let error) {
             debugPrint(error)
         }
-        NotificationCenter.default.post(name: .cartDidUpdate, object: nil)
+        NotificationCenter.default.post(name: .cartDidUpdate, object: nil, userInfo: ["ItemsToUpdate": updatedItems])
+        updatedItems = []
     }
     
     func itemList() -> [Product] {
@@ -84,5 +93,10 @@ extension Cart {
             list.append(item.key)
         }
         return list
+    }
+    
+    func purchase() {
+        items = [:]
+        commitUpdate()
     }
 }

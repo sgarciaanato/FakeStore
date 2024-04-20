@@ -17,6 +17,7 @@ final class ProductCollectionView: UICollectionView {
     required init() {
         super.init(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.identifier)
+        register(FeaturedProductCell.self, forCellWithReuseIdentifier: FeaturedProductCell.identifier)
     }
     
     required init?(coder: NSCoder) {

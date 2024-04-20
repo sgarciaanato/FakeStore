@@ -128,11 +128,11 @@ private extension ProductDetailViewController {
     }
     
     @objc func decrease() {
-        // delegate?.decrease(product: product)
+        presenter.decrease()
     }
     
     @objc func increase() {
-        // delegate?.increase(product: product, animatedImage: image)
+        presenter.increase()
     }
 }
 

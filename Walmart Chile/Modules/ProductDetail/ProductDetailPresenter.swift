@@ -10,6 +10,8 @@ import UIKit
 protocol ProductDetailPresenterDelegate {
     func viewDidLoad()
     func downloadImage(product: Product, imageView: UIImageView)
+    func increase()
+    func decrease()
 }
 
 final class ProductDetailPresenter {
@@ -75,5 +77,15 @@ extension ProductDetailPresenter: ProductDetailPresenterDelegate {
     
     func viewDidLoad() {
         loadProduct()
+    }
+    
+    func increase() {
+        cart.increase(product: selectedProduct)
+        delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct))
+    }
+    
+    func decrease() {
+        cart.decrease(product: selectedProduct)
+        delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct))
     }
 }

@@ -9,6 +9,7 @@ import UIKit
 
 protocol CartViewDelegate {
     var cart: Cart { get }
+    var cartItemDelegate: CartItemCellDelegate { get }
 }
 
 final class CartView: UIView {
@@ -18,13 +19,13 @@ final class CartView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: CartCompositionalLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
-        collectionView.register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.identifier)
+        collectionView.register(CartItemCell.self, forCellWithReuseIdentifier: CartItemCell.identifier)
         return collectionView
     }()
     
     lazy var totalAmountLabel: UILabel = {
         let label = UILabel()
-        label.text = "Total amount: $\(delegate.cart.totalAmout)"
+        label.text = "Total amount: $\(String(format: "%.2f", delegate.cart.totalAmout))"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -32,7 +33,8 @@ final class CartView: UIView {
     lazy var purchaseButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.titleLabel?.text = "Purchase"
+        button.setTitle("Purchase", for: .normal)
+        button.addTarget(self, action: #selector(purchase), for: .touchUpInside)
         return button
     }()
     
@@ -45,7 +47,7 @@ final class CartView: UIView {
         self.delegate = delegate
         super.init(frame: .zero)
         configureViews()
-        NotificationCenter.default.addObserver(self, selector: #selector(updateCart), name: .cartDidUpdate, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCart(_:)), name: .cartDidUpdate, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -83,9 +85,29 @@ private extension CartView {
         ])
     }
     
-    @objc func updateCart() {
+    @objc func updateCart(_ notification: NSNotification) {
+        totalAmountLabel.text = "Total amount: $\(String(format: "%.2f", delegate.cart.totalAmout))"
+        if let itemsToUpdate = notification.userInfo?["ItemsToUpdate"] as? [Product] {
+            var indexes = [IndexPath]()
+            for item in itemsToUpdate {
+                for cell in collectionView.visibleCells {
+                    guard let cell = cell as? CartItemCell else { return }
+                    if cell.product == item, let index = collectionView.indexPath(for: cell) {
+                        indexes.append(index)
+                    }
+                }
+            }
+            // Reload indexes with changes to avoid blinks
+            if !indexes.isEmpty {
+                collectionView.reloadItems(at: indexes)
+                return
+            }
+        }
         collectionView.reloadData()
-        totalAmountLabel.text = "Total amount: $\(delegate.cart.totalAmout)"
+    }
+    
+    @objc func purchase() {
+        delegate.cart.purchase()
     }
 }
 
@@ -95,8 +117,9 @@ extension CartView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.identifier, for: indexPath) as? ProductCell else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CartItemCell.identifier, for: indexPath) as? CartItemCell else { return UICollectionViewCell() }
         let product = delegate.cart.itemList()[indexPath.row]
+        cell.delegate = delegate.cartItemDelegate
         cell.setProduct(product, quantityInCart: delegate.cart.quantityOf(product: product))
         return cell
     }

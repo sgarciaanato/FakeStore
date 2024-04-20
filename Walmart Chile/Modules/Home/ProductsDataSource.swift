@@ -33,12 +33,17 @@ final class ProductsDataSource: NSObject, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if indexPath.section == 0 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedProductCell.identifier, for: indexPath) as? FeaturedProductCell else { return UICollectionViewCell() }
+            cell.delegate = productCellDelegate
+            let product = products[0]
+            cell.setProduct(product, quantityInCart: productCellDelegate.quantityOf(product: product))
+            return cell
+        }
+        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.identifier, for: indexPath) as? ProductCell else { return UICollectionViewCell() }
         cell.delegate = productCellDelegate
-        var product = products[indexPath.row]
-        if indexPath.section != 0 {
-            product = products[indexPath.row + 1]
-        }
+        let product = products[indexPath.row + 1]
         cell.setProduct(product, quantityInCart: productCellDelegate.quantityOf(product: product))
         return cell
     }
@@ -48,8 +53,11 @@ private extension ProductsDataSource {
     func reorderProducts() {
         guard products.count > 1 else { return }
         var prods = products
-        let featuredProduct = prods.removeFirst()
-        prods.insert(featuredProduct, at: 0)
+        if let featuredProduct = prods.max(by: { $0.rating.rate * $0.rating.count < $1.rating.rate * $1.rating.count }),
+            let index = prods.firstIndex(of: featuredProduct) {
+            let featuredProduct = prods.remove(at: index)
+            prods.insert(featuredProduct, at: 0)
+        }
         self.products = prods
     }
 }

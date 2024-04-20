@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CartViewControllerDelegate {
-    
+    func open(_ product: Product)
 }
 
 final class CartViewController: UIViewController {
@@ -40,9 +40,13 @@ final class CartViewController: UIViewController {
 }
 
 extension CartViewController: CartViewControllerDelegate {
-    
+    func open(_ product: Product) {
+        let productDetailPresenter = ProductDetailPresenter(product: product, cart: self.presenter.cart)
+        present(productDetailPresenter.viewController, animated: true, completion: nil)
+    }
 }
 
 extension CartViewController: CartViewDelegate {
     var cart: Cart { presenter.cart }
+    var cartItemDelegate: CartItemCellDelegate { presenter.cartItemDelegate }
 }
