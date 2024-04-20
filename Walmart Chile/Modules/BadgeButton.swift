@@ -43,12 +43,13 @@ class BadgeButton: UIButton {
     
     init(cart: Cart) {
         super.init(frame: .zero)
-        addBadgeToButon(badge: nil)
         NotificationCenter.default.addObserver(forName: .cartDidUpdate, object: nil, queue: nil) { [weak self] (notification) in
             guard let self else { return }
             let quantity = cart.quantityOfProducts()
             self.badge = quantity > 0 ? "\(quantity)" : nil
         }
+        let quantity = cart.quantityOfProducts()
+        self.badge = quantity > 0 ? "\(quantity)" : nil
     }
     
     deinit {

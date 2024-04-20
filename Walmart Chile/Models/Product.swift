@@ -5,7 +5,7 @@
 //  Created by Samuel García on 19-04-24.
 //
 
-struct Product: Decodable, Hashable {
+struct Product: Codable, Hashable {
     let id: Int
     let title: String
     let price: Double
@@ -21,9 +21,26 @@ struct Product: Decodable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(price, forKey: .price)
+        try container.encode(description, forKey: .description)
+        try container.encode(category, forKey: .category)
+        try container.encode(image, forKey: .image)
+        try container.encode(rating, forKey: .rating)
+    }
 }
 
-struct Rating: Decodable {
+struct Rating: Codable {
     let rate: Double
     let count: Double
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(rate, forKey: .rate)
+        try container.encode(count, forKey: .count)
+    }
 }

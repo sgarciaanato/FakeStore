@@ -12,9 +12,24 @@ extension Notification.Name {
 }
 
 final class Cart {
-    var updateAllowed = true
-    var items: [Product: Int] = [:]
+    var updateAllowed: Bool
+    var items: [Product: Int]
     var button: BadgeButton?
+    
+    required init() {
+        updateAllowed = true
+        guard let data = UserDefaults.standard.data(forKey: "CartItems") else {
+            items = [:]
+            return
+        }
+        let jsonDecoder = JSONDecoder()
+        do {
+            items = try jsonDecoder.decode([Product: Int].self, from: data)
+        } catch(let error) {
+            debugPrint(error)
+            items = [:]
+        }
+    }
 }
 
 extension Cart {
@@ -40,7 +55,7 @@ extension Cart {
         } else {
             items[product] = quantityOf(product: product) + 1
         }
-        NotificationCenter.default.post(name: .cartDidUpdate, object: product)
+        commitUpdate()
     }
     
     func decrease(product: Product) {
@@ -49,7 +64,18 @@ extension Cart {
         } else {
             items[product] = quantityOf(product: product) - 1
         }
-        NotificationCenter.default.post(name: .cartDidUpdate, object: product)
+        commitUpdate()
+    }
+    
+    func commitUpdate() {
+        let encoder = JSONEncoder()
+        do {
+            let data = try encoder.encode(items)
+            UserDefaults.standard.set(data, forKey: "CartItems")
+        } catch(let error) {
+            debugPrint(error)
+        }
+        NotificationCenter.default.post(name: .cartDidUpdate, object: nil)
     }
     
     func itemList() -> [Product] {

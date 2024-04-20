@@ -14,11 +14,6 @@ final class HomeView: UIView {
         return collectionView
     }()
     
-    lazy var compositionalLayout: ProductsCompositionalLayout = {
-        let layout = ProductsCompositionalLayout()
-        return layout
-    }()
-    
     required init() {
         super.init(frame: .zero)
         configureViews()
