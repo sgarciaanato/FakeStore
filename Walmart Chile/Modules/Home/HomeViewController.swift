@@ -50,11 +50,8 @@ final class HomeViewController: UIViewController {
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: cartButton), categoryButton]
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Walmart Chile"
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        presenter.viewDidAppear(animated)
+        
+        presenter.viewDidLoad()
     }
     
     override func loadView() {
@@ -72,14 +69,15 @@ private extension HomeViewController {
     }
     
     @objc func openCart() {
-        navigationController?.pushViewController(CartViewController(), animated: true)
+        let cartPresenter = CartPresenter(cart: self.presenter.cart)
+        navigationController?.pushViewController(cartPresenter.viewController, animated: true)
     }
 }
 
 extension HomeViewController: HomeViewControllerDelegate {
     func open(_ product: Product) {
-        let productDetailViewController = ProductDetailViewController()
-        present(productDetailViewController, animated: true, completion: nil)
+        let productDetailPresenter = ProductDetailPresenter(product: product, cart: self.presenter.cart)
+        present(productDetailPresenter.viewController, animated: true, completion: nil)
     }
     
     func setDataSource(_ dataSource: ProductsDataSource) {

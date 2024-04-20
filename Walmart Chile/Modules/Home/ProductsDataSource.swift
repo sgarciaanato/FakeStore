@@ -10,9 +10,11 @@ import UIKit
 final class ProductsDataSource: NSObject, UICollectionViewDataSource {
     var products: [Product]
     var productCellDelegate: ProductCellDelegate
+    var isLoading: Bool
     
-    required init(products: [Product], delegate: ProductCellDelegate) {
+    required init(products: [Product], isLoading: Bool = false, delegate: ProductCellDelegate) {
         self.products = products
+        self.isLoading = isLoading
         self.productCellDelegate = delegate
         super.init()
         reorderProducts()
@@ -23,6 +25,7 @@ final class ProductsDataSource: NSObject, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if isLoading { return 0 }
         if section == 0 {
             return 1
         }
@@ -32,7 +35,7 @@ final class ProductsDataSource: NSObject, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.identifier, for: indexPath) as? ProductCell else { return UICollectionViewCell() }
         cell.delegate = productCellDelegate
-        var product = products[0]
+        var product = products[indexPath.row]
         if indexPath.section != 0 {
             product = products[indexPath.row + 1]
         }
@@ -43,6 +46,7 @@ final class ProductsDataSource: NSObject, UICollectionViewDataSource {
 
 private extension ProductsDataSource {
     func reorderProducts() {
+        guard products.count > 1 else { return }
         var prods = products
         let featuredProduct = prods.removeFirst()
         prods.insert(featuredProduct, at: 0)

@@ -8,14 +8,15 @@
 import UIKit
 
 protocol HomePresenterDelegate {
-    func viewDidAppear(_ animated: Bool)
+    var cart: Cart { get }
+    func viewDidLoad()
     func loadProducts(from category: String?)
 }
 
 final class HomePresenter {
     var viewController: UIViewController {
         guard let _viewController else {
-            let homeViewController = HomeViewController(presenter: self, cart: cart)
+            let homeViewController = HomeViewController(presenter: self, cart: _cart)
             let navigationController = UINavigationController(rootViewController: homeViewController)
             delegate = homeViewController
             _viewController = navigationController
@@ -26,7 +27,7 @@ final class HomePresenter {
     private var _viewController: UIViewController?
     
     private var delegate: HomeViewControllerDelegate?
-    private var cart: Cart
+    private var _cart: Cart
     private var networkManager: HomeNetworkManager
     private var productsDataSource: ProductsDataSource? {
         didSet {
@@ -36,13 +37,16 @@ final class HomePresenter {
     }
     
     required init(cart: Cart) {
-        self.cart = cart
+        _cart = cart
         self.networkManager = HomeNetworkManager()
     }
 }
 
 extension HomePresenter: HomePresenterDelegate {
+    var cart: Cart { _cart }
+    
     func loadProducts(from category: String? = nil) {
+        self.productsDataSource = ProductsDataSource(products: [], isLoading: true, delegate: self)
         networkManager.getProducts(from: category) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -56,29 +60,29 @@ extension HomePresenter: HomePresenterDelegate {
         }
     }
     
-    func viewDidAppear(_ animated: Bool) {
+    func viewDidLoad() {
         loadProducts()
     }
 }
 
 extension HomePresenter: ProductCellDelegate {
     func increase(product: Product?, animatedImage: UIImageView) {
-        guard let product, cart.updateAllowed else { return }
-        if cart.quantityOf(product: product) == 0 {
-            cart.updateAllowed = false
+        guard let product, _cart.updateAllowed else { return }
+        if _cart.quantityOf(product: product) == 0 {
+            _cart.updateAllowed = false
             delegate?.flyOverToCart(imageView: animatedImage, completion: { [weak self] in
                 guard let self else { return }
-                self.cart.increase(product: product)
-                cart.updateAllowed = true
+                self._cart.increase(product: product)
+                _cart.updateAllowed = true
             })
             return
         }
-        cart.increase(product: product)
+        _cart.increase(product: product)
     }
     
     func decrease(product: Product?) {
-        guard let product, cart.updateAllowed else { return }
-        cart.decrease(product: product)
+        guard let product, _cart.updateAllowed else { return }
+        _cart.decrease(product: product)
     }
     
     func select(product: Product?) {
@@ -88,11 +92,12 @@ extension HomePresenter: ProductCellDelegate {
     
     func quantityOf(product: Product?) -> Int {
         guard let product else { return 0 }
-        return cart.quantityOf(product: product)
+        return _cart.quantityOf(product: product)
     }
     
     func downloadImage(product: Product?, imageView: UIImageView) {
         guard let product else { return }
+        imageView.image = nil
         networkManager.getImage(from: product.image) { result in
             switch result {
             case .success(let data):

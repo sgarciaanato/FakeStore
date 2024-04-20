@@ -51,6 +51,10 @@ class BadgeButton: UIButton {
         }
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     func addBadgeToButon(badge: String?) {
         badgeLabel.text = badge
         badgeLabel.textColor = badgeTextColor

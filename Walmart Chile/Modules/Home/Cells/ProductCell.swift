@@ -86,6 +86,10 @@ final class ProductCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 private extension ProductCell {
@@ -135,7 +139,7 @@ private extension ProductCell {
             plusButton.topAnchor.constraint(equalTo: price.topAnchor),
             plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: Constants.horizontalPadding),
             plusButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
-            plusButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.verticalPadding),
+            plusButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.verticalPadding),
             plusButton.widthAnchor.constraint(equalTo: plusButton.heightAnchor)
         ])
     }

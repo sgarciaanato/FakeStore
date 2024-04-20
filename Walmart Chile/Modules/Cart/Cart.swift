@@ -18,6 +18,14 @@ final class Cart {
 }
 
 extension Cart {
+    var totalAmout: Double {
+        var amount = 0.0
+        for item in items {
+            amount += item.key.price * Double(item.value)
+        }
+        return amount
+    }
+    
     func quantityOfProducts() -> Int {
         items.compactMap { $0.value }.reduce(0, +)
     }
@@ -42,5 +50,13 @@ extension Cart {
             items[product] = quantityOf(product: product) - 1
         }
         NotificationCenter.default.post(name: .cartDidUpdate, object: product)
+    }
+    
+    func itemList() -> [Product] {
+        var list = [Product]()
+        for item in items {
+            list.append(item.key)
+        }
+        return list
     }
 }
