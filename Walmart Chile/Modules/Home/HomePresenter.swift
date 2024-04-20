@@ -14,10 +14,11 @@ protocol HomePresenterDelegate {
 final class HomePresenter {
     var viewController: UIViewController {
         guard let _viewController else {
-            let vc = HomeViewController(presenter: self)
-            delegate = vc
-            _viewController = vc
-            return vc
+            let homeViewController = HomeViewController(presenter: self)
+            let navigationController = UINavigationController(rootViewController: homeViewController)
+            delegate = homeViewController
+            _viewController = navigationController
+            return navigationController
         }
         return _viewController
     }
@@ -45,7 +46,7 @@ private extension HomePresenter {
             guard let self else { return }
             switch result {
             case .success(let products):
-                self.productsDataSource = ProductsDataSource(products: products)
+                self.productsDataSource = ProductsDataSource(products: products, networkManager: networkManager)
             case .failure(let error):
                 // TODO: show error
                 debugPrint(error)

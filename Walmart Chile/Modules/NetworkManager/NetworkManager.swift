@@ -48,6 +48,21 @@ class NetworkManager {
             }
         }.resume()
     }
+    
+    func getImage(from urlString:String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data else {
+                completion(.failure(.invalidData))
+                return
+            }
+            completion(.success(data))
+        }.resume()
+    }
 }
 
 private extension NetworkManager {

@@ -8,31 +8,43 @@
 import UIKit
 
 final class ProductsDataSource: NSObject, UICollectionViewDataSource {
-    var featuredProduct: Product?
-    
     var products: [Product]
+    var networkManager: HomeNetworkManager
     
-    required init(products: [Product]) {
+    required init(products: [Product], networkManager: HomeNetworkManager) {
         self.products = products
+        self.networkManager = networkManager
         super.init()
-        getFeaturedProduct()
+        reorderProducts()
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        2
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        products.count
+        if section == 0 {
+            return 1
+        }
+        return products.count - 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.identifier, for: indexPath) as? ProductCell else { return UICollectionViewCell() }
-        cell.setProduct(products[indexPath.row])
+        if indexPath.section == 0 {
+            cell.setProduct(products[0], networkManager: networkManager)
+            return cell
+        }
+        cell.setProduct(products[indexPath.row + 1], networkManager: networkManager)
         return cell
     }
 }
 
 private extension ProductsDataSource {
-    func getFeaturedProduct() {
+    func reorderProducts() {
         var prods = products
-        featuredProduct = prods.removeFirst()
+        let featuredProduct = prods.removeFirst()
+        prods.insert(featuredProduct, at: 0)
         self.products = prods
     }
 }

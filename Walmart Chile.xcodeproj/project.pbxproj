@@ -21,7 +21,7 @@
 		60D1B6892BD3030E00EC2C55 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6882BD3030E00EC2C55 /* HomeView.swift */; };
 		60D1B68B2BD3063500EC2C55 /* ProductsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B68A2BD3063500EC2C55 /* ProductsDataSource.swift */; };
 		60D1B68D2BD318C500EC2C55 /* ProductsCompositionalLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B68C2BD318C500EC2C55 /* ProductsCompositionalLayout.swift */; };
-		60D1B68F2BD3233600EC2C55 /* FeaturedProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B68E2BD3233600EC2C55 /* FeaturedProductView.swift */; };
+		60D1B6912BD33AD300EC2C55 /* ProductCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6902BD33AD300EC2C55 /* ProductCollectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +41,7 @@
 		60D1B6882BD3030E00EC2C55 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		60D1B68A2BD3063500EC2C55 /* ProductsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsDataSource.swift; sourceTree = "<group>"; };
 		60D1B68C2BD318C500EC2C55 /* ProductsCompositionalLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsCompositionalLayout.swift; sourceTree = "<group>"; };
-		60D1B68E2BD3233600EC2C55 /* FeaturedProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedProductView.swift; sourceTree = "<group>"; };
+		60D1B6902BD33AD300EC2C55 /* ProductCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCollectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +105,7 @@
 				60D1B6882BD3030E00EC2C55 /* HomeView.swift */,
 				60D1B68A2BD3063500EC2C55 /* ProductsDataSource.swift */,
 				60D1B68C2BD318C500EC2C55 /* ProductsCompositionalLayout.swift */,
-				60D1B68E2BD3233600EC2C55 /* FeaturedProductView.swift */,
+				60D1B6902BD33AD300EC2C55 /* ProductCollectionView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -215,7 +215,6 @@
 				60D1B6602BD2E88100EC2C55 /* AppDelegate.swift in Sources */,
 				60D1B68D2BD318C500EC2C55 /* ProductsCompositionalLayout.swift in Sources */,
 				60D1B6832BD2F71B00EC2C55 /* Product.swift in Sources */,
-				60D1B68F2BD3233600EC2C55 /* FeaturedProductView.swift in Sources */,
 				60D1B6622BD2E88100EC2C55 /* SceneDelegate.swift in Sources */,
 				60D1B6892BD3030E00EC2C55 /* HomeView.swift in Sources */,
 				60D1B67B2BD2EF8600EC2C55 /* Cart.swift in Sources */,
@@ -224,6 +223,7 @@
 				60D1B6762BD2EB2600EC2C55 /* HomeViewController.swift in Sources */,
 				60D1B6872BD3019200EC2C55 /* ProductCell.swift in Sources */,
 				60D1B6782BD2EC0E00EC2C55 /* HomePresenter.swift in Sources */,
+				60D1B6912BD33AD300EC2C55 /* ProductCollectionView.swift in Sources */,
 				60D1B67D2BD2F1BA00EC2C55 /* HomeNetworkManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

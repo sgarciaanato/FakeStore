@@ -30,6 +30,10 @@ final class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let cartButton = UIBarButtonItem(image: UIImage(systemName: "cart"), style: .plain, target: self, action: nil)
+        let categoryButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: nil)
+        self.navigationItem.rightBarButtonItems = [cartButton, categoryButton]
+        self.navigationItem.title = "Walmart Chile"
     }
     
     override func viewDidAppear(_ animated: Bool) {
