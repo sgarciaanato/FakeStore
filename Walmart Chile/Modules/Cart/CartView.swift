@@ -15,10 +15,15 @@ protocol CartViewDelegate {
 final class CartView: UIView {
     var delegate: CartViewDelegate
     
+    enum CartSection {
+        case main
+    }
+    
+    var dataSource: UICollectionViewDiffableDataSource<CartSection, CartItem>?
+    
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: CartCompositionalLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.dataSource = self
         collectionView.register(CartItemCell.self, forCellWithReuseIdentifier: CartItemCell.identifier)
         return collectionView
     }()
@@ -47,7 +52,16 @@ final class CartView: UIView {
         self.delegate = delegate
         super.init(frame: .zero)
         configureViews()
-        NotificationCenter.default.addObserver(self, selector: #selector(updateCart(_:)), name: .cartDidUpdate, object: nil)
+        self.dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CartItemCell.identifier, for: indexPath) as? CartItemCell else { return UICollectionViewCell() }
+            let product = delegate.cart.itemList()[indexPath.row]
+            cell.delegate = delegate.cartItemDelegate
+            let cartItem = CartItem(product: product, quantity: delegate.cart.quantityOf(product: product))
+            cell.setCartItem(cartItem)
+            return cell
+        })
+        updateCart()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCart), name: .cartDidUpdate, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -85,42 +99,20 @@ private extension CartView {
         ])
     }
     
-    @objc func updateCart(_ notification: NSNotification) {
-        totalAmountLabel.text = "Total amount: $\(String(format: "%.2f", delegate.cart.totalAmout))"
-        if let itemsToUpdate = notification.userInfo?["ItemsToUpdate"] as? [Product] {
-            var indexes = [IndexPath]()
-            for item in itemsToUpdate {
-                for cell in collectionView.visibleCells {
-                    guard let cell = cell as? CartItemCell else { return }
-                    if cell.product == item, let index = collectionView.indexPath(for: cell) {
-                        indexes.append(index)
-                    }
-                }
-            }
-            // Reload indexes with changes to avoid blinks
-            if !indexes.isEmpty {
-                collectionView.reloadItems(at: indexes)
-                return
-            }
+    @objc func updateCart() {
+        var cartItems = [CartItem]()
+        for product in delegate.cart.items {
+            cartItems.append(CartItem(product: product.key, quantity: product.value))
         }
-        collectionView.reloadData()
+        
+        var snapshot = NSDiffableDataSourceSnapshot<CartSection, CartItem>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(cartItems)
+        
+        dataSource?.apply(snapshot, animatingDifferences: true)
     }
     
     @objc func purchase() {
         delegate.cart.purchase()
-    }
-}
-
-extension CartView: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        delegate.cart.itemList().count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CartItemCell.identifier, for: indexPath) as? CartItemCell else { return UICollectionViewCell() }
-        let product = delegate.cart.itemList()[indexPath.row]
-        cell.delegate = delegate.cartItemDelegate
-        cell.setProduct(product, quantityInCart: delegate.cart.quantityOf(product: product))
-        return cell
     }
 }

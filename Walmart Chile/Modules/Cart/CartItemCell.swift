@@ -17,7 +17,7 @@ protocol CartItemCellDelegate {
 
 final class CartItemCell: UICollectionViewCell {
     static let identifier = "CartItemCellDelegate"
-    var product: Product?
+    var cartItem: CartItem?
     var delegate: CartItemCellDelegate?
     
     lazy var selectionButton: UIButton = {
@@ -145,20 +145,22 @@ private extension CartItemCell {
     }
     
     @objc func selectProduct() {
+        guard let product = cartItem?.product else { return }
         delegate?.select(product: product)
     }
     
     @objc func decrease() {
+        guard let product = cartItem?.product else { return }
         delegate?.decrease(product: product)
     }
     
     @objc func increase() {
+        guard let product = cartItem?.product else { return }
         delegate?.increase(product: product, animatedImage: image)
     }
     
     @objc func updateQuantityLabel() {
-        guard let product else { return }
-        let quantity = delegate?.quantityOf(product: product) ?? 0
+        guard let quantity = cartItem?.quantity else { return }
         minusButton.isHidden = quantity <= 0
         quantityLabel.isHidden = quantity <= 0
         quantityLabel.text = "\(quantity)"
@@ -166,13 +168,13 @@ private extension CartItemCell {
 }
 
 extension CartItemCell {
-    func setProduct(_ product: Product, quantityInCart: Int) {
-        self.product = product
-        title.text = product.title
-        minusButton.isHidden = quantityInCart <= 0
-        quantityLabel.isHidden = quantityInCart <= 0
-        quantityLabel.text = "\(quantityInCart)"
-        price.text = "\(product.price)"
-        delegate?.downloadImage(product: product, imageView: image)
+    func setCartItem(_ cartItem: CartItem) {
+        self.cartItem = cartItem
+        title.text = cartItem.product.title
+        minusButton.isHidden = cartItem.quantity <= 0
+        quantityLabel.isHidden = cartItem.quantity <= 0
+        quantityLabel.text = "\(cartItem.quantity)"
+        price.text = "\(cartItem.product.price)"
+        delegate?.downloadImage(product: cartItem.product, imageView: image)
     }
 }

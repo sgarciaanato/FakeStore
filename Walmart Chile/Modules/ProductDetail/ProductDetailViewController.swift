@@ -32,10 +32,17 @@ final class ProductDetailViewController: UIViewController {
         return label
     }()
     
-    lazy var price: UILabel = {
+    lazy var priceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
+        return label
+    }()
+    
+    lazy var descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
         return label
     }()
     
@@ -90,7 +97,8 @@ private extension ProductDetailViewController {
     func configureView() {
         self.view.addSubview(productImage)
         self.view.addSubview(productTitle)
-        self.view.addSubview(price)
+        self.view.addSubview(priceLabel)
+        self.view.addSubview(descriptionLabel)
         self.view.addSubview(minusButton)
         self.view.addSubview(quantityLabel)
         self.view.addSubview(plusButton)
@@ -109,17 +117,17 @@ private extension ProductDetailViewController {
             productTitle.leadingAnchor.constraint(equalTo: productImage.leadingAnchor, constant: Constants.horizontalPadding),
             productTitle.trailingAnchor.constraint(equalTo: productImage.trailingAnchor, constant: -Constants.horizontalPadding),
             
-            price.topAnchor.constraint(equalTo: productTitle.bottomAnchor, constant: Constants.verticalPadding),
-            price.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.horizontalPadding),
-            price.trailingAnchor.constraint(equalTo: minusButton.leadingAnchor),
+            priceLabel.topAnchor.constraint(equalTo: productTitle.bottomAnchor, constant: Constants.verticalPadding),
+            priceLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.horizontalPadding),
+            priceLabel.trailingAnchor.constraint(equalTo: minusButton.leadingAnchor),
             
-            minusButton.topAnchor.constraint(equalTo: price.topAnchor),
+            minusButton.topAnchor.constraint(equalTo: priceLabel.topAnchor),
             
-            quantityLabel.topAnchor.constraint(equalTo: price.topAnchor),
+            quantityLabel.topAnchor.constraint(equalTo: priceLabel.topAnchor),
             quantityLabel.leadingAnchor.constraint(equalTo: minusButton.trailingAnchor, constant: Constants.horizontalPadding),
             quantityLabel.widthAnchor.constraint(equalToConstant: 20),
             
-            plusButton.topAnchor.constraint(equalTo: price.topAnchor),
+            plusButton.topAnchor.constraint(equalTo: priceLabel.topAnchor),
             plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: Constants.horizontalPadding),
             plusButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.horizontalPadding),
             plusButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.verticalPadding),
@@ -144,7 +152,7 @@ extension ProductDetailViewController: ProductDetailViewControllerDelegate {
             self.minusButton.isHidden = quantityInCart <= 0
             self.quantityLabel.isHidden = quantityInCart <= 0
             self.quantityLabel.text = "\(quantityInCart)"
-            self.price.text = "\(product.price)"
+            self.priceLabel.text = "\(product.price)"
         }
         presenter.downloadImage(product: product, imageView: productImage)
     }

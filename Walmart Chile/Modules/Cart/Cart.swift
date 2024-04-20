@@ -64,12 +64,12 @@ extension Cart {
     }
     
     func decrease(product: Product) {
-        if !updatedItems.contains(product) {
-            updatedItems.append(product)
-        }
         if quantityOf(product: product) == 1{
             items[product] = nil
         } else {
+            if !updatedItems.contains(product) {
+                updatedItems.append(product)
+            }
             items[product] = quantityOf(product: product) - 1
         }
         commitUpdate()
