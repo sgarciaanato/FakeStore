@@ -9,11 +9,11 @@ import UIKit
 
 final class ProductsDataSource: NSObject, UICollectionViewDataSource {
     var products: [Product]
-    var networkManager: HomeNetworkManager
+    var productCellDelegate: ProductCellDelegate
     
-    required init(products: [Product], networkManager: HomeNetworkManager) {
+    required init(products: [Product], delegate: ProductCellDelegate) {
         self.products = products
-        self.networkManager = networkManager
+        self.productCellDelegate = delegate
         super.init()
         reorderProducts()
     }
@@ -31,11 +31,12 @@ final class ProductsDataSource: NSObject, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.identifier, for: indexPath) as? ProductCell else { return UICollectionViewCell() }
-        if indexPath.section == 0 {
-            cell.setProduct(products[0], networkManager: networkManager)
-            return cell
+        cell.delegate = productCellDelegate
+        var product = products[0]
+        if indexPath.section != 0 {
+            product = products[indexPath.row + 1]
         }
-        cell.setProduct(products[indexPath.row + 1], networkManager: networkManager)
+        cell.setProduct(product, quantityInCart: productCellDelegate.quantityOf(product: product))
         return cell
     }
 }

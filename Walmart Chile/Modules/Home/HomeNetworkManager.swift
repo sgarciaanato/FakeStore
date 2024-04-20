@@ -8,8 +8,13 @@
 import Foundation
 
 final class HomeNetworkManager: NetworkManager {
-    func getProducts(completion: @escaping (Result<[Product], NetworkError>) -> Void) {
-        get(paths: [.products],type: [Product].self) { result in
+    func getProducts(from category: String? = nil, completion: @escaping (Result<[Product], NetworkError>) -> Void) {
+        var paths: [String] = ["products"]
+        if let category {
+            paths.append("category")
+            paths.append(category)
+        }
+        get(paths: paths, type: [Product].self) { result in
             switch result {
             case .success(let products):
                 completion(.success(products))

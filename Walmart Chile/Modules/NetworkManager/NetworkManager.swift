@@ -7,12 +7,6 @@
 
 import Foundation
 
-enum Path: String {
-    case products
-    case categories
-    case category
-}
-
 enum NetworkError: Error {
     case invalidURL
     case invalidData
@@ -23,7 +17,7 @@ enum NetworkError: Error {
 class NetworkManager {
     private let baseURL = "https://fakestoreapi.com"
     
-    func get<U: Decodable>(paths: [Path], type: U.Type, completion: @escaping (Result<U, NetworkError>) -> Void) {
+    func get<U: Decodable>(paths: [String], type: U.Type, completion: @escaping (Result<U, NetworkError>) -> Void) {
         guard let url = buildUrl(paths: paths) else {
             completion(.failure(.invalidURL))
             return
@@ -66,7 +60,7 @@ class NetworkManager {
 }
 
 private extension NetworkManager {
-    func buildUrl(paths: [Path]) -> URL? {
+    func buildUrl(paths: [String]) -> URL? {
         var stringUrl = baseURL
         for path in paths {
             stringUrl += "/\(path)"

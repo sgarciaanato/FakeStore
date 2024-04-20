@@ -7,8 +7,25 @@
 
 import UIKit
 
+protocol ProductCellDelegate {
+    func increase(product: Product?, animatedImage: UIImageView)
+    func decrease(product: Product?)
+    func select(product: Product?)
+    func quantityOf(product: Product?) -> Int
+    func downloadImage(product: Product?, imageView: UIImageView)
+}
+
 final class ProductCell: UICollectionViewCell {
     static let identifier = "ProductCell"
+    var product: Product?
+    var delegate: ProductCellDelegate?
+    
+    lazy var selectionButton: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(selectProduct), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
     
     lazy var image: UIImageView = {
         let image = UIImageView()
@@ -35,16 +52,35 @@ final class ProductCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var addToCart: UIButton = {
+    lazy var minusButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "minus.circle"), for: .normal)
+        button.addTarget(self, action: #selector(decrease), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+    
+    lazy var quantityLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = false
+        label.textAlignment = .center
+        return label
+    }()
+    
+    lazy var plusButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
+        button.addTarget(self, action: #selector(increase), for: .touchUpInside)
         return button
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureView()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateQuantityLabel), name: .cartDidUpdate, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -59,49 +95,80 @@ private extension ProductCell {
     }
     
     func configureView() {
+        self.contentView.addSubview(selectionButton)
         self.contentView.addSubview(image)
         self.contentView.addSubview(title)
         self.contentView.addSubview(price)
-        self.contentView.addSubview(addToCart)
+        self.contentView.addSubview(minusButton)
+        self.contentView.addSubview(quantityLabel)
+        self.contentView.addSubview(plusButton)
         configureConstraints()
     }
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
+            selectionButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+            selectionButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            selectionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            selectionButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
             image.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.verticalPadding),
             image.widthAnchor.constraint(equalTo: image.heightAnchor),
             image.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             image.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
             image.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
+            
             title.topAnchor.constraint(equalTo: image.bottomAnchor, constant: Constants.verticalPadding),
             title.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
             title.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
+            
             price.topAnchor.constraint(equalTo: title.bottomAnchor, constant: Constants.verticalPadding),
             price.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
-            addToCart.topAnchor.constraint(equalTo: price.topAnchor),
-            addToCart.leadingAnchor.constraint(equalTo: price.trailingAnchor, constant: Constants.horizontalPadding),
-            addToCart.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
-            addToCart.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.verticalPadding),
-            addToCart.widthAnchor.constraint(equalTo: addToCart.heightAnchor)
+            price.trailingAnchor.constraint(equalTo: minusButton.leadingAnchor),
+            
+            minusButton.topAnchor.constraint(equalTo: price.topAnchor),
+            
+            quantityLabel.topAnchor.constraint(equalTo: price.topAnchor),
+            quantityLabel.leadingAnchor.constraint(equalTo: minusButton.trailingAnchor, constant: Constants.horizontalPadding),
+            quantityLabel.widthAnchor.constraint(equalToConstant: 20),
+            
+            plusButton.topAnchor.constraint(equalTo: price.topAnchor),
+            plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: Constants.horizontalPadding),
+            plusButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
+            plusButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.verticalPadding),
+            plusButton.widthAnchor.constraint(equalTo: plusButton.heightAnchor)
         ])
+    }
+    
+    @objc func selectProduct() {
+        delegate?.select(product: product)
+    }
+    
+    @objc func decrease() {
+        delegate?.decrease(product: product)
+    }
+    
+    @objc func increase() {
+        delegate?.increase(product: product, animatedImage: image)
+    }
+    
+    @objc func updateQuantityLabel() {
+        guard let product else { return }
+        let quantity = delegate?.quantityOf(product: product) ?? 0
+        minusButton.isHidden = quantity <= 0
+        quantityLabel.isHidden = quantity <= 0
+        quantityLabel.text = "\(quantity)"
     }
 }
 
 extension ProductCell {
-    func setProduct(_ product: Product, networkManager: NetworkManager) {
+    func setProduct(_ product: Product, quantityInCart: Int) {
+        self.product = product
         title.text = product.title
+        minusButton.isHidden = quantityInCart <= 0
+        quantityLabel.isHidden = quantityInCart <= 0
+        quantityLabel.text = "\(quantityInCart)"
         price.text = "\(product.price)"
-        networkManager.getImage(from: product.image) { result in
-            switch result {
-            case .success(let data):
-                DispatchQueue.main.async { [weak self] in
-                    guard let self else { return }
-                    self.image.image = UIImage(data: data)
-                }
-            case .failure(let error):
-                // TODO: show error
-                debugPrint(error)
-            }
-        }
+        delegate?.downloadImage(product: product, imageView: image)
     }
 }
