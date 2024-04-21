@@ -43,6 +43,11 @@ extension CartPresenter: CartItemCellDelegate {
         cart.increase(product: product)
     }
     
+    func remove(product: Product?) {
+        guard let product else { return }
+        cart.remove(product: product)
+    }
+    
     func decrease(product: Product?) {
         guard let product else { return }
         cart.decrease(product: product)

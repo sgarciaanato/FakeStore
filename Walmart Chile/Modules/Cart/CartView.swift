@@ -28,10 +28,23 @@ final class CartView: UIView {
         return collectionView
     }()
     
+    lazy var footerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = Constants.cornerRadius
+        view.backgroundColor = .secondarySystemBackground
+        view.layer.shadowOpacity = 0.1
+        view.layer.shadowOffset = CGSizeMake(3, 3)
+        view.layer.shadowRadius = 1
+        return view
+    }()
+    
     lazy var totalAmountLabel: UILabel = {
         let label = UILabel()
         label.text = "Total amount: $\(String(format: "%.2f", delegate.cart.totalAmout))"
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.boldSystemFont(ofSize: 26.0)
+        label.textAlignment = .center
         return label
     }()
     
@@ -39,7 +52,13 @@ final class CartView: UIView {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Purchase", for: .normal)
+        button.setTitleColor(.systemBackground, for: .normal)
         button.addTarget(self, action: #selector(purchase), for: .touchUpInside)
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = Constants.cornerRadius
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = Constants.buttonInsets
+        button.configuration = configuration
         return button
     }()
     
@@ -74,10 +93,17 @@ final class CartView: UIView {
 }
 
 private extension CartView {
+    enum Constants {
+        static let cornerRadius: CGFloat = 8.0
+        static let margin: CGFloat = 6.0
+        static let buttonInsets: NSDirectionalEdgeInsets = .init(top: 10.0, leading: 46.0, bottom: 10.0, trailing: 46.0)
+    }
+    
     func configureViews() {
         addSubview(collectionView)
-        addSubview(totalAmountLabel)
-        addSubview(purchaseButton)
+        addSubview(footerView)
+        footerView.addSubview(totalAmountLabel)
+        footerView.addSubview(purchaseButton)
         configureConstraints()
         backgroundColor = .systemBackground
     }
@@ -87,14 +113,19 @@ private extension CartView {
             collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: footerView.topAnchor),
             
-            totalAmountLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
-            totalAmountLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            totalAmountLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            footerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: Constants.margin),
+            footerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -Constants.margin),
+            footerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constants.cornerRadius),
+            footerView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/6),
+            
+            totalAmountLabel.topAnchor.constraint(equalTo: footerView.topAnchor),
+            totalAmountLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor),
+            totalAmountLabel.trailingAnchor.constraint(equalTo: footerView.trailingAnchor),
             
             purchaseButton.topAnchor.constraint(equalTo: totalAmountLabel.bottomAnchor),
-            purchaseButton.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            purchaseButton.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            purchaseButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
             purchaseButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
     }

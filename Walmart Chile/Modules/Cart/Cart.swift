@@ -63,6 +63,11 @@ extension Cart {
         commitUpdate()
     }
     
+    func remove(product: Product) {
+        items[product] = nil
+        commitUpdate()
+    }
+    
     func decrease(product: Product) {
         if quantityOf(product: product) == 1{
             items[product] = nil

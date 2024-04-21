@@ -9,6 +9,13 @@ import Foundation
 
 final class HomeNetworkManager: NetworkManager {
     func getProducts(from category: String? = nil, completion: @escaping (Result<[Product], NetworkError>) -> Void) {
+        if useMock, let mockData = Mock.loadData("products") {
+            let jsonDecoder = JSONDecoder()
+            if let products = try? jsonDecoder.decode([Product].self, from: mockData) {
+                completion(.success(products))
+            }
+            return
+        }
         var paths: [String] = ["products"]
         if let category {
             paths.append("category")

@@ -20,6 +20,24 @@ final class ProductCell: UICollectionViewCell {
     static let identifier = "ProductCell"
     var product: Product?
     var delegate: ProductCellDelegate?
+    var quantityContainerHidden: NSLayoutConstraint?
+    var quantityContainerShown: NSLayoutConstraint?
+    
+    var showQuantity: Bool {
+        didSet {
+            quantityContainerShown?.priority = showQuantity ? UILayoutPriority(999) : UILayoutPriority(1)
+            quantityContainerHidden?.priority = showQuantity ? UILayoutPriority(1) : UILayoutPriority(999)
+            if !showQuantity {
+                minusButton.alpha = 0.0
+                quantityLabel.alpha = 0.0
+            }
+            UIView.animate(withDuration: 0.4) { [weak self] in
+                guard let self else { return }
+                minusButton.alpha = showQuantity ? 1.0 : 0.0
+                quantityLabel.alpha = showQuantity ? 1.0 : 0.0
+            }
+        }
+    }
     
     lazy var containerView: UIView = {
         let view = UIView()
@@ -61,7 +79,7 @@ final class ProductCell: UICollectionViewCell {
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 2
+        label.numberOfLines = 3
         label.textAlignment = .center
         label.font = label.font.withSize(15)
         return label
@@ -70,14 +88,13 @@ final class ProductCell: UICollectionViewCell {
     lazy var priceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 1
         return label
     }()
     
     lazy var quantityContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.layer.cornerRadius = Constants.cornerRadius
         return view
     }()
@@ -87,14 +104,12 @@ final class ProductCell: UICollectionViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "minus.circle"), for: .normal)
         button.addTarget(self, action: #selector(decrease), for: .touchUpInside)
-        button.isHidden = true
         return button
     }()
     
     lazy var quantityLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.isHidden = false
         label.textAlignment = .center
         return label
     }()
@@ -108,6 +123,7 @@ final class ProductCell: UICollectionViewCell {
     }()
     
     override init(frame: CGRect) {
+        self.showQuantity = true
         super.init(frame: frame)
         configureView()
         NotificationCenter.default.addObserver(self, selector: #selector(updateQuantityLabel), name: .cartDidUpdate, object: nil)
@@ -129,6 +145,8 @@ private extension ProductCell {
         static let innerMargins: CGFloat = 6.0
         static let innerImageMargins: CGFloat = 24.0
         static let innerButtonsMargins: CGFloat = 2.0
+        static let quantityContainerHeight: CGFloat = 26.0
+        static let quantityContainerWidth: CGFloat = 76.0
     }
     
     func configureView() {
@@ -146,6 +164,13 @@ private extension ProductCell {
     }
     
     func configureConstraints() {
+        let quantityContainerHidden = quantityContainerView.widthAnchor.constraint(equalToConstant: Constants.quantityContainerHeight)
+        quantityContainerHidden.priority = UILayoutPriority(1)
+        
+        let quantityContainerShown = quantityContainerView.widthAnchor.constraint(equalToConstant: Constants.quantityContainerWidth)
+        self.quantityContainerHidden = quantityContainerHidden
+        self.quantityContainerShown = quantityContainerShown
+        
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.outerMargins),
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.outerMargins),
@@ -179,23 +204,24 @@ private extension ProductCell {
             priceLabel.trailingAnchor.constraint(equalTo: quantityContainerView.leadingAnchor, constant: -Constants.innerMargins),
             priceLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.innerMargins),
             
-            quantityContainerView.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
+            quantityContainerView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.innerMargins),
             quantityContainerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.innerMargins),
+            quantityContainerView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.innerMargins),
+            quantityContainerView.heightAnchor.constraint(equalToConstant: Constants.quantityContainerHeight),
+            quantityContainerHidden,
+            quantityContainerShown,
             
             minusButton.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
             minusButton.leadingAnchor.constraint(equalTo: quantityContainerView.leadingAnchor, constant: Constants.innerButtonsMargins),
-            minusButton.trailingAnchor.constraint(equalTo: quantityLabel.leadingAnchor, constant: -Constants.innerButtonsMargins),
             minusButton.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
-            minusButton.widthAnchor.constraint(equalTo: minusButton.heightAnchor),
             
             quantityLabel.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
+            quantityLabel.centerXAnchor.constraint(equalTo: quantityContainerView.centerXAnchor, constant: Constants.innerButtonsMargins),
             quantityLabel.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
             
             plusButton.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
-            plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: Constants.innerButtonsMargins),
             plusButton.trailingAnchor.constraint(equalTo: quantityContainerView.trailingAnchor, constant: -Constants.innerButtonsMargins),
             plusButton.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
-            plusButton.widthAnchor.constraint(equalTo: plusButton.heightAnchor)
         ])
     }
     
@@ -214,8 +240,7 @@ private extension ProductCell {
     @objc func updateQuantityLabel() {
         guard let product else { return }
         let quantity = delegate?.quantityOf(product: product) ?? 0
-        minusButton.isHidden = quantity <= 0
-        quantityLabel.isHidden = quantity <= 0
+        showQuantity = quantity > 0
         quantityLabel.text = "\(quantity)"
     }
 }
@@ -224,8 +249,7 @@ extension ProductCell {
     func setProduct(_ product: Product, quantityInCart: Int) {
         self.product = product
         titleLabel.text = product.title
-        minusButton.isHidden = quantityInCart <= 0
-        quantityLabel.isHidden = quantityInCart <= 0
+        showQuantity = quantityInCart > 0
         quantityLabel.text = "\(quantityInCart)"
         priceLabel.text = "\(product.price)"
         delegate?.downloadImage(product: product, imageView: imageView)

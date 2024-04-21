@@ -35,6 +35,10 @@
 		60D1B6AD2BD444AB00EC2C55 /* FeaturedProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6AC2BD444AB00EC2C55 /* FeaturedProductCell.swift */; };
 		60D1B6AF2BD4483300EC2C55 /* CartItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6AE2BD4483300EC2C55 /* CartItemCell.swift */; };
 		60D1B6B12BD46D0F00EC2C55 /* CartItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6B02BD46D0F00EC2C55 /* CartItem.swift */; };
+		60D1B6B42BD4BEB900EC2C55 /* products.json in Resources */ = {isa = PBXBuildFile; fileRef = 60D1B6B32BD4BEB900EC2C55 /* products.json */; };
+		60D1B6B62BD4BEE100EC2C55 /* categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 60D1B6B52BD4BEE100EC2C55 /* categories.json */; };
+		60D1B6BA2BD4BF6600EC2C55 /* Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6B92BD4BF6600EC2C55 /* Mock.swift */; };
+		60D1B6BC2BD4D92700EC2C55 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6BB2BD4D92700EC2C55 /* Cache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +72,10 @@
 		60D1B6AC2BD444AB00EC2C55 /* FeaturedProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedProductCell.swift; sourceTree = "<group>"; };
 		60D1B6AE2BD4483300EC2C55 /* CartItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemCell.swift; sourceTree = "<group>"; };
 		60D1B6B02BD46D0F00EC2C55 /* CartItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItem.swift; sourceTree = "<group>"; };
+		60D1B6B32BD4BEB900EC2C55 /* products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products.json; sourceTree = "<group>"; };
+		60D1B6B52BD4BEE100EC2C55 /* categories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = categories.json; sourceTree = "<group>"; };
+		60D1B6B92BD4BF6600EC2C55 /* Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mock.swift; sourceTree = "<group>"; };
+		60D1B6BB2BD4D92700EC2C55 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +108,7 @@
 		60D1B65E2BD2E88100EC2C55 /* Walmart Chile */ = {
 			isa = PBXGroup;
 			children = (
+				60D1B6B22BD4BEA000EC2C55 /* Mocks */,
 				60D1B6812BD2F71200EC2C55 /* Models */,
 				60D1B6732BD2EAFC00EC2C55 /* Modules */,
 				60D1B65F2BD2E88100EC2C55 /* AppDelegate.swift */,
@@ -147,7 +156,6 @@
 				60D1B6A82BD41C5E00EC2C55 /* CartView.swift */,
 				60D1B6AA2BD41CB200EC2C55 /* CartCompositionalLayout.swift */,
 				60D1B6AE2BD4483300EC2C55 /* CartItemCell.swift */,
-				60D1B6B02BD46D0F00EC2C55 /* CartItem.swift */,
 			);
 			path = Cart;
 			sourceTree = "<group>";
@@ -156,6 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				60D1B67E2BD2F46D00EC2C55 /* NetworkManager.swift */,
+				60D1B6BB2BD4D92700EC2C55 /* Cache.swift */,
 			);
 			path = NetworkManager;
 			sourceTree = "<group>";
@@ -163,6 +172,7 @@
 		60D1B6812BD2F71200EC2C55 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				60D1B6B02BD46D0F00EC2C55 /* CartItem.swift */,
 				60D1B6822BD2F71B00EC2C55 /* Product.swift */,
 			);
 			path = Models;
@@ -195,6 +205,16 @@
 				60D1B6A42BD4170B00EC2C55 /* ProductDetailNetworkManager.swift */,
 			);
 			path = ProductDetail;
+			sourceTree = "<group>";
+		};
+		60D1B6B22BD4BEA000EC2C55 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				60D1B6B32BD4BEB900EC2C55 /* products.json */,
+				60D1B6B52BD4BEE100EC2C55 /* categories.json */,
+				60D1B6B92BD4BF6600EC2C55 /* Mock.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -255,6 +275,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60D1B6B42BD4BEB900EC2C55 /* products.json in Resources */,
+				60D1B6B62BD4BEE100EC2C55 /* categories.json in Resources */,
 				60D1B66C2BD2E88200EC2C55 /* LaunchScreen.storyboard in Resources */,
 				60D1B6692BD2E88200EC2C55 /* Assets.xcassets in Resources */,
 			);
@@ -275,11 +297,13 @@
 				60D1B6A92BD41C5E00EC2C55 /* CartView.swift in Sources */,
 				60D1B67B2BD2EF8600EC2C55 /* Cart.swift in Sources */,
 				60D1B69D2BD39B8500EC2C55 /* CategoriesPresenter.swift in Sources */,
+				60D1B6BA2BD4BF6600EC2C55 /* Mock.swift in Sources */,
 				60D1B67F2BD2F46D00EC2C55 /* NetworkManager.swift in Sources */,
 				60D1B6AB2BD41CB200EC2C55 /* CartCompositionalLayout.swift in Sources */,
 				60D1B6A72BD41A5900EC2C55 /* CartPresenter.swift in Sources */,
 				60D1B68B2BD3063500EC2C55 /* ProductsDataSource.swift in Sources */,
 				60D1B69F2BD39CCC00EC2C55 /* CategoriesNetworkManager.swift in Sources */,
+				60D1B6BC2BD4D92700EC2C55 /* Cache.swift in Sources */,
 				60D1B6762BD2EB2600EC2C55 /* HomeViewController.swift in Sources */,
 				60D1B6932BD35CB800EC2C55 /* BadgeButton.swift in Sources */,
 				60D1B69B2BD3986500EC2C55 /* ProductDetailViewController.swift in Sources */,

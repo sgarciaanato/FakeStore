@@ -15,6 +15,13 @@ enum NetworkError: Error {
 }
 
 class NetworkManager {
+    let useMock = false
+    
+    required init() {
+        self.cache = Cache()
+    }
+    let cache: Cache
+    
     private let baseURL = "https://fakestoreapi.com"
     
     func get<U: Decodable>(paths: [String], type: U.Type, completion: @escaping (Result<U, NetworkError>) -> Void) {
@@ -44,16 +51,22 @@ class NetworkManager {
     }
     
     func getImage(from urlString:String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
+        if let imageCacheData = cache.getData(from: urlString) {
+            completion(.success(imageCacheData))
+            return
+        }
         guard let url = URL(string: urlString) else {
             completion(.failure(.invalidURL))
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self else { return }
             guard let data else {
                 completion(.failure(.invalidData))
                 return
             }
+            self.cache.storeData(data, to: urlString)
             completion(.success(data))
         }.resume()
     }
