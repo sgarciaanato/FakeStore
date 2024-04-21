@@ -10,6 +10,7 @@ import UIKit
 protocol CartViewDelegate {
     var cart: Cart { get }
     var cartItemDelegate: CartItemCellDelegate { get }
+    func dismiss()
 }
 
 final class CartView: UIView {
@@ -20,6 +21,14 @@ final class CartView: UIView {
     }
     
     var dataSource: UICollectionViewDiffableDataSource<CartSection, CartItem>?
+    
+    lazy var emptyCartImage: UIImageView = {
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.contentMode = .scaleAspectFit
+        image.image = UIImage(named: "EmptyCart")
+        return image
+    }()
     
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: CartCompositionalLayout())
@@ -100,6 +109,7 @@ private extension CartView {
     }
     
     func configureViews() {
+        addSubview(emptyCartImage)
         addSubview(collectionView)
         addSubview(footerView)
         footerView.addSubview(totalAmountLabel)
@@ -110,6 +120,11 @@ private extension CartView {
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
+            emptyCartImage.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5),
+            emptyCartImage.heightAnchor.constraint(equalTo: emptyCartImage.widthAnchor),
+            emptyCartImage.centerXAnchor.constraint(equalTo: centerXAnchor),
+            emptyCartImage.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
             collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
@@ -141,9 +156,21 @@ private extension CartView {
         snapshot.appendItems(cartItems)
         
         dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        let totalAmount = delegate.cart.totalAmout
+        emptyCartImage.isHidden = totalAmount > 0
+        collectionView.isHidden = totalAmount <= 0
+        if totalAmount > 0  {
+            totalAmountLabel.text = "Total amount: $\(String(format: "%.2f", delegate.cart.totalAmout))"
+            purchaseButton.isEnabled = true
+            return
+        }
+        totalAmountLabel.text = "Empty cart"
+        purchaseButton.isEnabled = false
     }
     
     @objc func purchase() {
         delegate.cart.purchase()
+        delegate.dismiss()
     }
 }
