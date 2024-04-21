@@ -12,13 +12,11 @@ extension Notification.Name {
 }
 
 final class Cart {
-    var updateAllowed: Bool
     var updatedItems: [Product]
     var items: [Product: Int]
     var button: BadgeButton?
     
     required init() {
-        updateAllowed = true
         updatedItems = []
         guard let data = UserDefaults.standard.data(forKey: "CartItems") else {
             items = [:]

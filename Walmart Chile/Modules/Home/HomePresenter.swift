@@ -25,6 +25,7 @@ final class HomePresenter {
         }
         return _viewController
     }
+    private var _isLoading: Bool
     private var _viewController: UIViewController?
     
     private var delegate: HomeViewControllerDelegate?
@@ -37,6 +38,7 @@ final class HomePresenter {
     }
     
     required init(cart: Cart) {
+        _isLoading = true
         _cart = cart
         networkManager = HomeNetworkManager()
         _products = []
@@ -48,11 +50,13 @@ extension HomePresenter: HomePresenterDelegate {
     var productCellDelegate: ProductCellDelegate { self }
     
     func loadProducts(from category: String? = nil) {
-        _products = []
+        _isLoading = true
+        _products = getLoadingProducts()
         networkManager.getProducts(from: category) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let products):
+                _isLoading = false
                 self._products = reorder(products)
             case .failure(let error):
                 // TODO: show error
@@ -68,24 +72,21 @@ extension HomePresenter: HomePresenterDelegate {
 }
 
 extension HomePresenter: ProductCellDelegate {
+    var isLoading: Bool { _isLoading }
     var products: [Product] { _products }
     
     func increase(product: Product?, animatedImage: UIImageView) {
-        guard let product, _cart.updateAllowed else { return }
+        guard let product else { return }
         if _cart.quantityOf(product: product) == 0 {
-            _cart.updateAllowed = false
-            delegate?.flyOverToCart(imageView: animatedImage, completion: { [weak self] in
-                guard let self else { return }
-                self._cart.increase(product: product)
-                _cart.updateAllowed = true
-            })
+            self._cart.increase(product: product)
+            delegate?.flyOverToCart(imageView: animatedImage)
             return
         }
         _cart.increase(product: product)
     }
     
     func decrease(product: Product?) {
-        guard let product, _cart.updateAllowed else { return }
+        guard let product else { return }
         _cart.decrease(product: product)
     }
     
@@ -125,5 +126,15 @@ private extension HomePresenter {
             prods.insert(featuredProduct, at: 0)
         }
         return prods
+    }
+    
+    func getLoadingProducts() -> [Product] {
+        return [
+            Product(id: -1, title: "", price: 0.0, description: "", category: "", image: "", rating: Rating(rate: 0.0, count: 0.0)),
+            Product(id: -2, title: "", price: 0.0, description: "", category: "", image: "", rating: Rating(rate: 0.0, count: 0.0)),
+            Product(id: -3, title: "", price: 0.0, description: "", category: "", image: "", rating: Rating(rate: 0.0, count: 0.0)),
+            Product(id: -4, title: "", price: 0.0, description: "", category: "", image: "", rating: Rating(rate: 0.0, count: 0.0)),
+            Product(id: -5, title: "", price: 0.0, description: "", category: "", image: "", rating: Rating(rate: 0.0, count: 0.0))
+        ]
     }
 }

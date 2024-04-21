@@ -20,9 +20,16 @@ final class ProductCollectionView: UICollectionView {
         self.productCellDelegate = productCellDelegate
         super.init(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         collectionViewLayout = createCompositionalLayout()
+        register(ShimmerCell.self, forCellWithReuseIdentifier: ShimmerCell.identifier)
         register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.identifier)
         register(FeaturedProductCell.self, forCellWithReuseIdentifier: FeaturedProductCell.identifier)
         self.productsDataSource = UICollectionViewDiffableDataSource(collectionView: self, cellProvider: { collectionView, indexPath, itemIdentifier in
+            
+            if productCellDelegate.isLoading {
+                guard let shimmerCell = collectionView.dequeueReusableCell(withReuseIdentifier: ShimmerCell.identifier, for: indexPath) as? ShimmerCell else { return UICollectionViewCell() }
+                return shimmerCell
+            }
+            
             if indexPath.section == 0 {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedProductCell.identifier, for: indexPath) as? FeaturedProductCell else { return UICollectionViewCell() }
                 cell.delegate = productCellDelegate

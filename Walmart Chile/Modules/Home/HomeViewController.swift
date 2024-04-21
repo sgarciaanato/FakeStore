@@ -13,7 +13,7 @@ protocol CategorySelectionDelegate {
 
 protocol HomeViewControllerDelegate {
     func updateDataSource()
-    func flyOverToCart(imageView: UIImageView, completion: @escaping ()->())
+    func flyOverToCart(imageView: UIImageView)
     func open(_ product: Product)
 }
 
@@ -84,14 +84,14 @@ extension HomeViewController: HomeViewControllerDelegate {
         homeView.updateDataSource()
     }
     
-    func flyOverToCart(imageView: UIImageView, completion: @escaping ()->()) {
+    func flyOverToCart(imageView: UIImageView) {
         guard let initialFrame = imageView.globalFrame, let finalFrame = cartButton.globalFrame else { return }
         let animatedImageView = UIImageView(frame: initialFrame)
         animatedImageView.layer.cornerRadius = 5
         animatedImageView.contentMode = .scaleAspectFit
         animatedImageView.image = imageView.image
         view.addSubview(animatedImageView)
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.3) {
             animatedImageView.frame = finalFrame
         } completion: { [weak self] _ in
             animatedImageView.removeFromSuperview()
@@ -100,9 +100,7 @@ extension HomeViewController: HomeViewControllerDelegate {
             UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.1, initialSpringVelocity: 3, options: .allowUserInteraction, animations: { [weak self] in
                 guard let self else { return }
                 self.cartButton.transform = CGAffineTransform.identity
-            }) { _ in
-                completion()
-            }
+            })
         }
         
     }

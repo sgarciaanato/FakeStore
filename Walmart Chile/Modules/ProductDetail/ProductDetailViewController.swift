@@ -180,10 +180,10 @@ extension ProductDetailViewController: ProductDetailViewControllerDelegate {
             self.titleLabel.text = product.title
             stepper.quantity = quantityInCart
             /// `isLoading is used to mock the difference between the model from list product to the fully loaded product
-            if isLoading { return }
             self.priceLabel.text = "$\(product.price)"
-            self.descriptionLabel.text = product.description
             self.rateLabel.text = "\(product.rating.rate) (\(product.rating.count))"
+            if isLoading { return }
+            self.descriptionLabel.text = product.description
         }
         presenter.downloadImage(product: product, imageView: imageView)
     }

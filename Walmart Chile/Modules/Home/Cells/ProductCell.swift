@@ -8,6 +8,7 @@
 import UIKit
 
 protocol ProductCellDelegate {
+    var isLoading: Bool { get }
     var products: [Product] { get }
     func increase(product: Product?, animatedImage: UIImageView)
     func decrease(product: Product?)
