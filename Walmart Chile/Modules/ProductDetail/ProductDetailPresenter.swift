@@ -19,6 +19,7 @@ final class ProductDetailPresenter {
         guard let _viewController else {
             let productDetailViewController = ProductDetailViewController(presenter: self)
             delegate = productDetailViewController
+            delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct), isLoading: true)
             return productDetailViewController
         }
         return _viewController
@@ -27,7 +28,7 @@ final class ProductDetailPresenter {
     
     private var selectedProduct: Product {
         didSet {
-            delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct))
+            delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct), isLoading: false)
         }
     }
     
@@ -81,11 +82,11 @@ extension ProductDetailPresenter: ProductDetailPresenterDelegate {
     
     func increase() {
         cart.increase(product: selectedProduct)
-        delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct))
+        delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct), isLoading: false)
     }
     
     func decrease() {
         cart.decrease(product: selectedProduct)
-        delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct))
+        delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct), isLoading: false)
     }
 }

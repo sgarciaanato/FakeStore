@@ -86,35 +86,11 @@ final class CartItemCell: UICollectionViewCell {
         return button
     }()
     
-    lazy var quantityContainerView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemBackground
-        view.layer.cornerRadius = Constants.cornerRadius
-        return view
-    }()
-    
-    lazy var minusButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "minus.circle"), for: .normal)
-        button.addTarget(self, action: #selector(decrease), for: .touchUpInside)
-        return button
-    }()
-    
-    lazy var quantityLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
-        return label
-    }()
-    
-    lazy var plusButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
-        button.addTarget(self, action: #selector(increase), for: .touchUpInside)
-        return button
+    lazy var stepper: Stepper = {
+        let stepper = Stepper()
+        stepper.translatesAutoresizingMaskIntoConstraints = false
+        stepper.delegate = self
+        return stepper
     }()
     
     override init(frame: CGRect) {
@@ -152,10 +128,7 @@ private extension CartItemCell {
         containerView.addSubview(titleLabel)
         containerView.addSubview(priceLabel)
         containerView.addSubview(removeButton)
-        containerView.addSubview(quantityContainerView)
-        quantityContainerView.addSubview(minusButton)
-        quantityContainerView.addSubview(quantityLabel)
-        quantityContainerView.addSubview(plusButton)
+        containerView.addSubview(stepper)
         configureConstraints()
     }
     
@@ -194,22 +167,8 @@ private extension CartItemCell {
             removeButton.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: Constants.innerMargins),
             removeButton.centerXAnchor.constraint(equalTo: priceLabel.centerXAnchor),
             
-            quantityContainerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.innerMargins),
-            quantityContainerView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.innerMargins),
-            quantityContainerView.heightAnchor.constraint(equalToConstant: Constants.quantityContainerHeight),
-            quantityContainerView.widthAnchor.constraint(equalToConstant: Constants.quantityContainerWidth),
-            
-            minusButton.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
-            minusButton.leadingAnchor.constraint(equalTo: quantityContainerView.leadingAnchor, constant: Constants.innerButtonsMargins),
-            minusButton.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
-            
-            quantityLabel.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
-            quantityLabel.centerXAnchor.constraint(equalTo: quantityContainerView.centerXAnchor, constant: Constants.innerButtonsMargins),
-            quantityLabel.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
-            
-            plusButton.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
-            plusButton.trailingAnchor.constraint(equalTo: quantityContainerView.trailingAnchor, constant: -Constants.innerButtonsMargins),
-            plusButton.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
+            stepper.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.innerMargins),
+            stepper.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.innerMargins)
         ])
         
     }
@@ -224,20 +183,9 @@ private extension CartItemCell {
         delegate?.remove(product: product)
     }
     
-    @objc func decrease() {
-        guard let product = cartItem?.product else { return }
-        delegate?.decrease(product: product)
-    }
-    
-    @objc func increase() {
-        guard let product = cartItem?.product else { return }
-        delegate?.increase(product: product, animatedImage: imageView)
-    }
-    
     @objc func updateQuantityLabel() {
         guard let product = cartItem?.product else { return }
-        let quantity = delegate?.quantityOf(product: product) ?? 0
-        quantityLabel.text = "\(quantity)"
+        stepper.quantity = delegate?.quantityOf(product: product) ?? 0
     }
 }
 
@@ -245,10 +193,20 @@ extension CartItemCell {
     func setCartItem(_ cartItem: CartItem) {
         self.cartItem = cartItem
         titleLabel.text = cartItem.product.title
-        minusButton.isHidden = cartItem.quantity <= 0
-        quantityLabel.isHidden = cartItem.quantity <= 0
-        quantityLabel.text = "\(cartItem.quantity)"
-        priceLabel.text = "\(cartItem.product.price)"
+        stepper.quantity = cartItem.quantity
+        priceLabel.text = "$\(cartItem.product.price)"
         delegate?.downloadImage(product: cartItem.product, imageView: imageView)
+    }
+}
+
+extension CartItemCell: StepperDelegate {
+    func increase() {
+        guard let product = cartItem?.product else { return }
+        delegate?.increase(product: product, animatedImage: imageView)
+    }
+    
+    func decrease() {
+        guard let product = cartItem?.product else { return }
+        delegate?.decrease(product: product)
     }
 }
