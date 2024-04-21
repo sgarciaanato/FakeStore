@@ -21,6 +21,18 @@ final class ProductCell: UICollectionViewCell {
     var product: Product?
     var delegate: ProductCellDelegate?
     
+    lazy var containerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = Constants.cornerRadius
+        view.backgroundColor = .secondarySystemBackground
+        view.center = self.contentView.center
+        view.layer.shadowOpacity = 0.1
+        view.layer.shadowOffset = CGSizeMake(3, 3)
+        view.layer.shadowRadius = 1
+        return view
+    }()
+    
     lazy var selectionButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(selectProduct), for: .touchUpInside)
@@ -28,7 +40,16 @@ final class ProductCell: UICollectionViewCell {
         return button
     }()
     
-    lazy var image: UIImageView = {
+    lazy var imageContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = Constants.cornerRadius
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
+    lazy var imageView: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
@@ -37,20 +58,28 @@ final class ProductCell: UICollectionViewCell {
         return image
     }()
     
-    lazy var title: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
         label.numberOfLines = 2
         label.textAlignment = .center
+        label.font = label.font.withSize(15)
         return label
     }()
     
-    lazy var price: UILabel = {
+    lazy var priceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
         return label
+    }()
+    
+    lazy var quantityContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = Constants.cornerRadius
+        return view
     }()
     
     lazy var minusButton: UIButton = {
@@ -95,52 +124,77 @@ final class ProductCell: UICollectionViewCell {
 
 private extension ProductCell {
     enum Constants {
-        static let verticalPadding: CGFloat = 8.0
-        static let horizontalPadding: CGFloat = 18.0
+        static let cornerRadius: CGFloat = 8.0
+        static let outerMargins: CGFloat = 4.0
+        static let innerMargins: CGFloat = 6.0
+        static let innerImageMargins: CGFloat = 24.0
+        static let innerButtonsMargins: CGFloat = 2.0
     }
     
     func configureView() {
-        self.contentView.addSubview(selectionButton)
-        self.contentView.addSubview(image)
-        self.contentView.addSubview(title)
-        self.contentView.addSubview(price)
-        self.contentView.addSubview(minusButton)
-        self.contentView.addSubview(quantityLabel)
-        self.contentView.addSubview(plusButton)
+        contentView.addSubview(containerView)
+        containerView.addSubview(selectionButton)
+        containerView.addSubview(imageContainerView)
+        imageContainerView.addSubview(imageView)
+        containerView.addSubview(titleLabel)
+        containerView.addSubview(priceLabel)
+        containerView.addSubview(quantityContainerView)
+        quantityContainerView.addSubview(minusButton)
+        quantityContainerView.addSubview(quantityLabel)
+        quantityContainerView.addSubview(plusButton)
         configureConstraints()
     }
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.outerMargins),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.outerMargins),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.outerMargins),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.outerMargins),
+            
             selectionButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             selectionButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             selectionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             selectionButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            image.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.verticalPadding),
-            image.widthAnchor.constraint(equalTo: image.heightAnchor),
-            image.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            image.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
-            image.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
+            imageContainerView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.innerMargins),
+            imageContainerView.widthAnchor.constraint(equalTo: imageContainerView.heightAnchor),
+            imageContainerView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            imageContainerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.innerMargins),
+            imageContainerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.innerMargins),
             
-            title.topAnchor.constraint(equalTo: image.bottomAnchor, constant: Constants.verticalPadding),
-            title.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
-            title.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
+            imageView.topAnchor.constraint(equalTo: imageContainerView.topAnchor, constant: Constants.innerImageMargins),
+            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
+            imageView.centerXAnchor.constraint(equalTo: imageContainerView.centerXAnchor),
+            imageView.leadingAnchor.constraint(greaterThanOrEqualTo: imageContainerView.leadingAnchor, constant: Constants.innerImageMargins),
+            imageView.trailingAnchor.constraint(lessThanOrEqualTo: imageContainerView.trailingAnchor, constant: -Constants.innerImageMargins),
+            imageView.bottomAnchor.constraint(lessThanOrEqualTo: imageContainerView.bottomAnchor, constant: -Constants.innerImageMargins),
             
-            price.topAnchor.constraint(equalTo: title.bottomAnchor, constant: Constants.verticalPadding),
-            price.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
-            price.trailingAnchor.constraint(equalTo: minusButton.leadingAnchor),
+            titleLabel.topAnchor.constraint(equalTo: imageContainerView.bottomAnchor, constant: Constants.innerMargins),
+            titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.innerMargins),
+            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.innerMargins),
             
-            minusButton.topAnchor.constraint(equalTo: price.topAnchor),
+            priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.innerMargins),
+            priceLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            priceLabel.trailingAnchor.constraint(equalTo: quantityContainerView.leadingAnchor, constant: -Constants.innerMargins),
+            priceLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.innerMargins),
             
-            quantityLabel.topAnchor.constraint(equalTo: price.topAnchor),
-            quantityLabel.leadingAnchor.constraint(equalTo: minusButton.trailingAnchor, constant: Constants.horizontalPadding),
-            quantityLabel.widthAnchor.constraint(equalToConstant: 20),
+            quantityContainerView.centerYAnchor.constraint(equalTo: priceLabel.centerYAnchor),
+            quantityContainerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.innerMargins),
             
-            plusButton.topAnchor.constraint(equalTo: price.topAnchor),
-            plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: Constants.horizontalPadding),
-            plusButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
-            plusButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.verticalPadding),
+            minusButton.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
+            minusButton.leadingAnchor.constraint(equalTo: quantityContainerView.leadingAnchor, constant: Constants.innerButtonsMargins),
+            minusButton.trailingAnchor.constraint(equalTo: quantityLabel.leadingAnchor, constant: -Constants.innerButtonsMargins),
+            minusButton.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
+            minusButton.widthAnchor.constraint(equalTo: minusButton.heightAnchor),
+            
+            quantityLabel.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
+            quantityLabel.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
+            
+            plusButton.topAnchor.constraint(equalTo: quantityContainerView.topAnchor, constant: Constants.innerButtonsMargins),
+            plusButton.leadingAnchor.constraint(equalTo: quantityLabel.trailingAnchor, constant: Constants.innerButtonsMargins),
+            plusButton.trailingAnchor.constraint(equalTo: quantityContainerView.trailingAnchor, constant: -Constants.innerButtonsMargins),
+            plusButton.bottomAnchor.constraint(equalTo: quantityContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
             plusButton.widthAnchor.constraint(equalTo: plusButton.heightAnchor)
         ])
     }
@@ -154,7 +208,7 @@ private extension ProductCell {
     }
     
     @objc func increase() {
-        delegate?.increase(product: product, animatedImage: image)
+        delegate?.increase(product: product, animatedImage: imageView)
     }
     
     @objc func updateQuantityLabel() {
@@ -169,11 +223,11 @@ private extension ProductCell {
 extension ProductCell {
     func setProduct(_ product: Product, quantityInCart: Int) {
         self.product = product
-        title.text = product.title
+        titleLabel.text = product.title
         minusButton.isHidden = quantityInCart <= 0
         quantityLabel.isHidden = quantityInCart <= 0
         quantityLabel.text = "\(quantityInCart)"
-        price.text = "\(product.price)"
-        delegate?.downloadImage(product: product, imageView: image)
+        priceLabel.text = "\(product.price)"
+        delegate?.downloadImage(product: product, imageView: imageView)
     }
 }

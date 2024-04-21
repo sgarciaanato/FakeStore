@@ -31,7 +31,6 @@ final class FeaturedProductCell: UICollectionViewCell {
     lazy var title: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
         label.numberOfLines = 2
         label.textAlignment = .center
         return label

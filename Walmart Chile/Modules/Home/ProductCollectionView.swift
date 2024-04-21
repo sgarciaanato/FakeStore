@@ -55,7 +55,6 @@ extension ProductCollectionView {
         }
         
         let featuredProduct = products.removeFirst()
-        debugPrint(featuredProduct.title)
         snapshot.appendSections([.featured])
         snapshot.appendItems([featuredProduct])
         snapshot.appendSections([.main])
@@ -69,9 +68,9 @@ private extension ProductCollectionView {
     func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnviroment in
             let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-            var group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1 / 3)), subitem: item, count: 2)
+            var group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(2 / 3)), subitem: item, count: 2)
             if sectionIndex == 0 {
-                group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1 / 3)), subitem: item, count: 1)
+                group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(3 / 5)), subitem: item, count: 1)
             }
             return NSCollectionLayoutSection(group: group)
         }

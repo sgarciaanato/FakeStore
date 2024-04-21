@@ -26,7 +26,6 @@ final class ProductDetailViewController: UIViewController {
     lazy var productTitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
         label.numberOfLines = 2
         label.textAlignment = .center
         return label
