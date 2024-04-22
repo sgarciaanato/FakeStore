@@ -10,7 +10,7 @@ import UIKit
 protocol CartViewDelegate {
     var cart: Cart { get }
     var cartItemDelegate: CartItemCellDelegate { get }
-    func dismiss()
+    func dismiss(success: Bool)
 }
 
 final class CartView: UIView {
@@ -105,12 +105,13 @@ private extension CartView {
     enum Constants {
         static let cornerRadius: CGFloat = 8.0
         static let margin: CGFloat = 6.0
+        static let spacing: CGFloat = 12.0
         static let buttonInsets: NSDirectionalEdgeInsets = .init(top: 10.0, leading: 46.0, bottom: 10.0, trailing: 46.0)
     }
     
     func configureViews() {
-        addSubview(emptyCartImage)
         addSubview(collectionView)
+        addSubview(emptyCartImage)
         addSubview(footerView)
         footerView.addSubview(totalAmountLabel)
         footerView.addSubview(purchaseButton)
@@ -130,16 +131,15 @@ private extension CartView {
             collectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: footerView.topAnchor),
             
-            footerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: Constants.margin),
-            footerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -Constants.margin),
+            footerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.margin),
+            footerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.margin),
             footerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: Constants.cornerRadius),
-            footerView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/6),
             
-            totalAmountLabel.topAnchor.constraint(equalTo: footerView.topAnchor),
+            totalAmountLabel.topAnchor.constraint(equalTo: footerView.topAnchor, constant: Constants.spacing),
             totalAmountLabel.leadingAnchor.constraint(equalTo: footerView.leadingAnchor),
             totalAmountLabel.trailingAnchor.constraint(equalTo: footerView.trailingAnchor),
             
-            purchaseButton.topAnchor.constraint(equalTo: totalAmountLabel.bottomAnchor),
+            purchaseButton.topAnchor.constraint(equalTo: totalAmountLabel.bottomAnchor, constant: Constants.spacing),
             purchaseButton.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
             purchaseButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
@@ -171,6 +171,6 @@ private extension CartView {
     
     @objc func purchase() {
         delegate.cart.purchase()
-        delegate.dismiss()
+        delegate.dismiss(success: true)
     }
 }

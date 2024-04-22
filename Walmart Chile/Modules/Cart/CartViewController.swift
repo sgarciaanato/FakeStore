@@ -49,7 +49,9 @@ extension CartViewController: CartViewControllerDelegate {
 extension CartViewController: CartViewDelegate {
     var cart: Cart { presenter.cart }
     var cartItemDelegate: CartItemCellDelegate { presenter.cartItemDelegate }
-    func dismiss() {
+    
+    func dismiss(success: Bool) {
+        presenter.showPurchaseView()
         navigationController?.popViewController(animated: true)
     }
 }

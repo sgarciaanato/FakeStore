@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol CartDelegate {
+    func showPurchaseView()
+}
+
 protocol CategorySelectionDelegate {
     func select(_ category: String?)
 }
@@ -69,7 +73,7 @@ private extension HomeViewController {
     }
     
     @objc func openCart() {
-        let cartPresenter = CartPresenter(cart: self.presenter.cart)
+        let cartPresenter = CartPresenter(cart: self.presenter.cart, cartDelegate: self)
         navigationController?.pushViewController(cartPresenter.viewController, animated: true)
     }
 }
@@ -120,5 +124,11 @@ extension UIView {
             .first?.windows
             .filter({$0.isKeyWindow}).first?.rootViewController?.view
         return self.superview?.convert(self.frame, to: rootView)
+    }
+}
+
+extension HomeViewController: CartDelegate {
+    func showPurchaseView() {
+        homeView.showPurchaseView()
     }
 }

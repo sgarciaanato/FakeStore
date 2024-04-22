@@ -10,6 +10,13 @@ import UIKit
 final class HomeView: UIView {
     var productCellDelegate: ProductCellDelegate
     
+    lazy var purchaseView: PurchaseView = {
+        let view = PurchaseView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        return view
+    }()
+    
     lazy var collectionView: ProductCollectionView = {
         let collectionView = ProductCollectionView(productCellDelegate: productCellDelegate)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -28,8 +35,13 @@ final class HomeView: UIView {
 }
 
 private extension HomeView {
+    enum Constants {
+        static let animationDuration: CGFloat = 1.0
+    }
+    
     func configureViews() {
         addSubview(collectionView)
+        addSubview(purchaseView)
         configureConstraints()
         backgroundColor = .systemBackground
     }
@@ -39,7 +51,12 @@ private extension HomeView {
             collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            purchaseView.topAnchor.constraint(equalTo: topAnchor),
+            purchaseView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            purchaseView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            purchaseView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 }
@@ -49,6 +66,24 @@ extension HomeView {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.collectionView.updateDataSource()
+        }
+    }
+    
+    func showPurchaseView() {
+        purchaseView.alpha = 0
+        purchaseView.isHidden = false
+        
+        UIView.animate(withDuration: Constants.animationDuration) { [weak self] in
+            guard let self else { return }
+            purchaseView.alpha = 1
+        } completion: { _ in
+            UIView.animate(withDuration: Constants.animationDuration, delay: Constants.animationDuration) { [weak self] in
+                guard let self else { return }
+                purchaseView.alpha = 0
+            } completion: { [weak self] _ in
+                guard let self else { return }
+                purchaseView.isHidden = true
+            }
         }
     }
 }

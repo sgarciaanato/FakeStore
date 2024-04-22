@@ -10,6 +10,8 @@ import UIKit
 protocol CartPresenterDelegate {
     var cart: Cart { get }
     var cartItemDelegate: CartItemCellDelegate { get }
+    
+    func showPurchaseView()
 }
 
 final class CartPresenter {
@@ -25,16 +27,22 @@ final class CartPresenter {
     private var delegate: CartViewControllerDelegate?
     private var networkManager: NetworkManager
     private var _cart: Cart
+    private var cartDelegate: CartDelegate
     
-    required init(cart: Cart) {
+    required init(cart: Cart, cartDelegate: CartDelegate) {
         self.networkManager = NetworkManager()
         _cart = cart
+        self.cartDelegate = cartDelegate
     }
 }
 
 extension CartPresenter: CartPresenterDelegate {
     var cart: Cart { _cart }
     var cartItemDelegate: CartItemCellDelegate { self }
+    
+    func showPurchaseView() {
+        cartDelegate.showPurchaseView()
+    }
 }
 
 extension CartPresenter: CartItemCellDelegate {

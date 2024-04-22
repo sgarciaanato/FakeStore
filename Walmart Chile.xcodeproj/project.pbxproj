@@ -40,6 +40,7 @@
 		60D1B6BC2BD4D92700EC2C55 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6BB2BD4D92700EC2C55 /* Cache.swift */; };
 		60D1B6BE2BD5915B00EC2C55 /* Stepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6BD2BD5915B00EC2C55 /* Stepper.swift */; };
 		60D1B6C02BD5AE9500EC2C55 /* ShimmerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6BF2BD5AE9500EC2C55 /* ShimmerCell.swift */; };
+		60D1B6C22BD5D11B00EC2C55 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6C12BD5D11B00EC2C55 /* PurchaseView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 		60D1B6BB2BD4D92700EC2C55 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		60D1B6BD2BD5915B00EC2C55 /* Stepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stepper.swift; sourceTree = "<group>"; };
 		60D1B6BF2BD5AE9500EC2C55 /* ShimmerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShimmerCell.swift; sourceTree = "<group>"; };
+		60D1B6C12BD5D11B00EC2C55 /* PurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 				60D1B67C2BD2F1BA00EC2C55 /* HomeNetworkManager.swift */,
 				60D1B6882BD3030E00EC2C55 /* HomeView.swift */,
 				60D1B6902BD33AD300EC2C55 /* ProductCollectionView.swift */,
+				60D1B6C12BD5D11B00EC2C55 /* PurchaseView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 				60D1B6602BD2E88100EC2C55 /* AppDelegate.swift in Sources */,
 				60D1B6832BD2F71B00EC2C55 /* Product.swift in Sources */,
 				60D1B6AF2BD4483300EC2C55 /* CartItemCell.swift in Sources */,
+				60D1B6C22BD5D11B00EC2C55 /* PurchaseView.swift in Sources */,
 				60D1B6622BD2E88100EC2C55 /* SceneDelegate.swift in Sources */,
 				60D1B6892BD3030E00EC2C55 /* HomeView.swift in Sources */,
 				60D1B6A92BD41C5E00EC2C55 /* CartView.swift in Sources */,

@@ -16,6 +16,17 @@ final class ProductDetailViewController: UIViewController {
     var quantityContainerHidden: NSLayoutConstraint?
     var quantityContainerShown: NSLayoutConstraint?
     
+    lazy var closeButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        if let image = UIImage(systemName: "xmark.circle")?.withRenderingMode(.alwaysTemplate) {
+            button.setImage(image, for: .normal)
+        }
+        button.tintColor = .secondaryLabel
+        button.addTarget(self, action: #selector(close), for: .touchUpInside)
+        return button
+    }()
+    
     lazy var imageContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -117,6 +128,7 @@ private extension ProductDetailViewController {
     }
     
     func configureView() {
+        view.addSubview(closeButton)
         view.addSubview(imageContainerView)
         imageContainerView.addSubview(imageView)
         view.addSubview(titleLabel)
@@ -131,10 +143,13 @@ private extension ProductDetailViewController {
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
+            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.verticalPadding),
+            closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.horizontalPadding),
+            
             imageContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4),
             imageContainerView.widthAnchor.constraint(equalTo: imageContainerView.heightAnchor),
             imageContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.horizontalPadding),
+            imageContainerView.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: Constants.horizontalPadding),
             
             imageView.topAnchor.constraint(equalTo: imageContainerView.topAnchor, constant: Constants.innerImageMargins),
             imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
@@ -144,10 +159,10 @@ private extension ProductDetailViewController {
             imageView.bottomAnchor.constraint(lessThanOrEqualTo: imageContainerView.bottomAnchor, constant: -Constants.innerImageMargins),
             
             titleLabel.topAnchor.constraint(equalTo: imageContainerView.bottomAnchor, constant: Constants.innerMargins),
-            titleLabel.leadingAnchor.constraint(equalTo: imageContainerView.leadingAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Constants.innerMargins),
             
             priceLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            priceLabel.trailingAnchor.constraint(equalTo: imageContainerView.trailingAnchor),
+            priceLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.innerMargins),
             priceLabel.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: Constants.innerMargins),
             
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.horizontalPadding),
@@ -167,9 +182,13 @@ private extension ProductDetailViewController {
             rateLabel.trailingAnchor.constraint(equalTo: ratingContainerView.trailingAnchor, constant: -Constants.innerButtonsMargins),
             rateLabel.bottomAnchor.constraint(equalTo: ratingContainerView.bottomAnchor, constant: -Constants.innerButtonsMargins),
             
-            stepper.trailingAnchor.constraint(equalTo: imageContainerView.trailingAnchor, constant: -Constants.innerMargins),
+            stepper.trailingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: -Constants.innerMargins),
             stepper.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Constants.innerMargins)
         ])
+    }
+    
+    @objc func close() {
+        dismiss(animated: true)
     }
 }
 
