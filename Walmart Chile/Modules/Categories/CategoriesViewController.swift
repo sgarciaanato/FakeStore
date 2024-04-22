@@ -9,6 +9,7 @@ import UIKit
 
 protocol CategoriesViewControllerDelegate {
     func reloadData()
+    func showError(_ error: NetworkError)
 }
 
 final class CategoriesViewController: UIViewController {
@@ -21,6 +22,13 @@ final class CategoriesViewController: UIViewController {
         button.setImage(UIImage(systemName: "xmark")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.addTarget(self, action: #selector(close), for: .touchUpInside)
         return button
+    }()
+    
+    lazy var errorView: ErrorView = {
+        let view = ErrorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        return view
     }()
     
     lazy var tableView: UITableView = {
@@ -43,7 +51,6 @@ final class CategoriesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.viewDidLoad()
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = String(localized: "Categories")
@@ -52,6 +59,10 @@ final class CategoriesViewController: UIViewController {
         view.backgroundColor = .secondarySystemBackground
         
         configureViews()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        presenter.viewDidAppear(animated)
     }
 }
 
@@ -62,6 +73,7 @@ private extension CategoriesViewController {
     
     func configureViews() {
         view.addSubview(tableView)
+        view.addSubview(errorView)
         configureConstraints()
         view.backgroundColor = .secondarySystemBackground
     }
@@ -71,7 +83,12 @@ private extension CategoriesViewController {
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            errorView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            errorView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            errorView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            errorView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }
@@ -80,7 +97,22 @@ extension CategoriesViewController: CategoriesViewControllerDelegate {
     func reloadData() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-            self.tableView.reloadData()
+            tableView.isHidden = false
+            errorView.isHidden = true
+            tableView.reloadData()
+        }
+    }
+    
+    func showError(_ error: NetworkError) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            errorView.error = error
+            errorView.retry = { [weak self] in
+                guard let self else { return }
+                presenter.reload()
+            }
+            tableView.isHidden = true
+            errorView.isHidden = false
         }
     }
 }

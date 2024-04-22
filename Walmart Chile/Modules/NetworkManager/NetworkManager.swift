@@ -12,6 +12,19 @@ enum NetworkError: Error {
     case invalidData
     case invalidResponse
     case message(_ error: Error?)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return String(localized: "InvalidURL")
+        case .invalidData:
+            return String(localized: "InvalidData")
+        case .invalidResponse:
+            return String(localized: "InvalidResponse")
+        case .message(let message):
+            return message?.localizedDescription
+        }
+    }
 }
 
 class NetworkManager {

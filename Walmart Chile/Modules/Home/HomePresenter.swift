@@ -59,8 +59,7 @@ extension HomePresenter: HomePresenterDelegate {
                 _isLoading = false
                 self._products = reorder(products)
             case .failure(let error):
-                // TODO: show error
-                debugPrint(error)
+                delegate?.showError(error)
                 break
             }
         }
@@ -109,11 +108,16 @@ extension HomePresenter: ProductCellDelegate {
                 DispatchQueue.main.async {
                     imageView.image = UIImage(data: data)
                 }
-            case .failure(let error):
-                // TODO: show error
-                debugPrint(error)
+            case .failure:
+                DispatchQueue.main.async {
+                    imageView.image = UIImage(named: "ErrorImage")
+                }
             }
         }
+    }
+    
+    func reload() {
+        loadProducts()
     }
 }
 

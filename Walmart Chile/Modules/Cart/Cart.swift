@@ -25,8 +25,7 @@ final class Cart {
         let jsonDecoder = JSONDecoder()
         do {
             items = try jsonDecoder.decode([Product: Int].self, from: data)
-        } catch(let error) {
-            debugPrint(error)
+        } catch {
             items = [:]
         }
     }

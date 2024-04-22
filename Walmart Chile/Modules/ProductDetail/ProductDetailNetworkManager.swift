@@ -14,7 +14,7 @@ final class ProductDetailNetworkManager: NetworkManager {
             case .success(let product):
                 completion(.success(product))
             case .failure(let error):
-                debugPrint(error)
+                completion(.failure(error))
             }
         }
     }

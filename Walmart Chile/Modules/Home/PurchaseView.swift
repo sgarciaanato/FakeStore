@@ -16,20 +16,20 @@ final class PurchaseView: UIView {
         return view
     }()
     
-    lazy var successLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = String(localized: "Success")
-        label.textAlignment = .center
-        return label
-    }()
-    
     lazy var successImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
         image.image = UIImage(named: "CartSuccess")
         return image
+    }()
+    
+    lazy var successLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = String(localized: "Success")
+        label.textAlignment = .center
+        return label
     }()
     
     override init(frame: CGRect) {

@@ -9,6 +9,7 @@ import UIKit
 
 protocol ProductDetailViewControllerDelegate {
     func reloadView(with product: Product, quantityInCart: Int, isLoading: Bool)
+    func showError(_ error: NetworkError)
 }
 
 final class ProductDetailViewController: UIViewController {
@@ -98,6 +99,13 @@ final class ProductDetailViewController: UIViewController {
         return stepper
     }()
     
+    lazy var errorView: ErrorView = {
+        let view = ErrorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        return view
+    }()
+    
     required init(presenter: ProductDetailPresenterDelegate) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
@@ -108,9 +116,13 @@ final class ProductDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presenter.viewDidAppear(animated)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.presenter.viewDidLoad()
         self.view.backgroundColor = .secondarySystemBackground
     }
 }
@@ -138,11 +150,17 @@ private extension ProductDetailViewController {
         ratingContainerView.addSubview(startImageView)
         ratingContainerView.addSubview(rateLabel)
         view.addSubview(stepper)
+        view.addSubview(errorView)
         configureConstraints()
     }
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
+            errorView.topAnchor.constraint(equalTo: view.topAnchor),
+            errorView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            errorView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            errorView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.verticalPadding),
             closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.horizontalPadding),
             
@@ -196,6 +214,7 @@ extension ProductDetailViewController: ProductDetailViewControllerDelegate {
     func reloadView(with product: Product, quantityInCart: Int, isLoading: Bool = false) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            errorView.isHidden = true
             self.titleLabel.text = product.title
             stepper.quantity = quantityInCart
             /// `isLoading is used to mock the difference between the model from list product to the fully loaded product
@@ -205,6 +224,18 @@ extension ProductDetailViewController: ProductDetailViewControllerDelegate {
             self.descriptionLabel.text = product.description
         }
         presenter.downloadImage(product: product, imageView: imageView)
+    }
+    
+    func showError(_ error: NetworkError) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            errorView.error = error
+            errorView.retry = { [weak self] in
+                guard let self else { return }
+                presenter.reload()
+            }
+            errorView.isHidden = false
+        }
     }
 }
 

@@ -19,6 +19,7 @@ protocol HomeViewControllerDelegate {
     func updateDataSource()
     func flyOverToCart(imageView: UIImageView)
     func open(_ product: Product)
+    func showError(_ error: NetworkError)
 }
 
 final class HomeViewController: UIViewController {
@@ -106,7 +107,10 @@ extension HomeViewController: HomeViewControllerDelegate {
                 self.cartButton.transform = CGAffineTransform.identity
             })
         }
-        
+    }
+    
+    func showError(_ error: NetworkError) {
+        homeView.showError(error)
     }
 }
 

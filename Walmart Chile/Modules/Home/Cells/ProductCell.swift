@@ -15,6 +15,7 @@ protocol ProductCellDelegate {
     func select(product: Product?)
     func quantityOf(product: Product?) -> Int
     func downloadImage(product: Product?, imageView: UIImageView)
+    func reload()
 }
 
 final class ProductCell: UICollectionViewCell {

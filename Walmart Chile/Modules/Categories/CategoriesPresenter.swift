@@ -9,8 +9,9 @@ import UIKit
 
 protocol CategoriesPresenterDelegate {
     var categories: [String] { get }
-    func viewDidLoad()
+    func viewDidAppear(_ animated: Bool)
     func select(_ category: String?)
+    func reload()
 }
 
 final class CategoriesPresenter {
@@ -48,8 +49,7 @@ private extension CategoriesPresenter {
                 self.categories.insert(String(localized: "All"), at: 0)
                 delegate?.reloadData()
             case .failure(let error):
-                // TODO: show error
-                debugPrint(error)
+                delegate?.showError(error)
                 break
             }
         }
@@ -57,11 +57,15 @@ private extension CategoriesPresenter {
 }
 
 extension CategoriesPresenter: CategoriesPresenterDelegate {
-    func viewDidLoad() {
+    func viewDidAppear(_ animated: Bool) {
         loadCategories()
     }
     
     func select(_ category: String?) {
         categorySelectionDelegate.select(category)
+    }
+    
+    func reload() {
+        loadCategories()
     }
 }

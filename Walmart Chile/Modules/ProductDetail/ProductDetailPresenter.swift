@@ -8,10 +8,11 @@
 import UIKit
 
 protocol ProductDetailPresenterDelegate {
-    func viewDidLoad()
+    func viewDidAppear(_ animated: Bool)
     func downloadImage(product: Product, imageView: UIImageView)
     func increase()
     func decrease()
+    func reload()
 }
 
 final class ProductDetailPresenter {
@@ -53,8 +54,7 @@ private extension ProductDetailPresenter {
             case .success(let product):
                 self.selectedProduct = product
             case .failure(let error):
-                // TODO: show error
-                debugPrint(error)
+                delegate?.showError(error)
                 break
             }
         }
@@ -69,14 +69,15 @@ extension ProductDetailPresenter: ProductDetailPresenterDelegate {
                 DispatchQueue.main.async {
                     imageView.image = UIImage(data: data)
                 }
-            case .failure(let error):
-                // TODO: show error
-                debugPrint(error)
+            case .failure:
+                DispatchQueue.main.async {
+                    imageView.image = UIImage(named: "ErrorImage")
+                }
             }
         }
     }
     
-    func viewDidLoad() {
+    func viewDidAppear(_ animated: Bool) {
         loadProduct()
     }
     
@@ -88,5 +89,9 @@ extension ProductDetailPresenter: ProductDetailPresenterDelegate {
     func decrease() {
         cart.decrease(product: selectedProduct)
         delegate?.reloadView(with: selectedProduct, quantityInCart: cart.quantityOf(product: selectedProduct), isLoading: false)
+    }
+    
+    func reload() {
+        loadProduct()
     }
 }

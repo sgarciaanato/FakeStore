@@ -21,6 +21,7 @@ Aplicación de prueba técnica en la que intentamos replicar un MVP de tienda el
 * DiffableDataSource en el Home y en el Carrito
 * Soporte Light mode y Dark mode
 * Soporte de lenguaje Ingles y Español
+* Pantalla de error en Home, Detalle de producto y Categorías
 * Animaciones
   - Agregar un producto al carrito anima la imagen del producto hacia el botón del carrito
   - Luego de la animación de la imagen al carrito este salta por un segundo

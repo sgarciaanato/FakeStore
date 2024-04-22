@@ -14,7 +14,7 @@ final class CategoriesNetworkManager: NetworkManager {
             case .success(let categories):
                 completion(.success(categories))
             case .failure(let error):
-                debugPrint(error)
+                completion(.failure(error))
             }
         }
     }

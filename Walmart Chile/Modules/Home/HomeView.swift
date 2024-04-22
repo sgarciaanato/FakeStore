@@ -17,6 +17,13 @@ final class HomeView: UIView {
         return view
     }()
     
+    lazy var errorView: ErrorView = {
+        let view = ErrorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        return view
+    }()
+    
     lazy var collectionView: ProductCollectionView = {
         let collectionView = ProductCollectionView(productCellDelegate: productCellDelegate)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -42,6 +49,7 @@ private extension HomeView {
     func configureViews() {
         addSubview(collectionView)
         addSubview(purchaseView)
+        addSubview(errorView)
         configureConstraints()
         backgroundColor = .systemBackground
     }
@@ -56,7 +64,12 @@ private extension HomeView {
             purchaseView.topAnchor.constraint(equalTo: topAnchor),
             purchaseView.leadingAnchor.constraint(equalTo: leadingAnchor),
             purchaseView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            purchaseView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            purchaseView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            errorView.topAnchor.constraint(equalTo: topAnchor),
+            errorView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            errorView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            errorView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 }
@@ -65,6 +78,8 @@ extension HomeView {
     func updateDataSource() {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            errorView.isHidden = true
+            collectionView.isHidden = false
             self.collectionView.updateDataSource()
         }
     }
@@ -84,6 +99,19 @@ extension HomeView {
                 guard let self else { return }
                 purchaseView.isHidden = true
             }
+        }
+    }
+    
+    func showError(_ error: NetworkError) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            errorView.error = error
+            errorView.retry = { [weak self] in
+                guard let self else { return }
+                productCellDelegate.reload()
+            }
+            errorView.isHidden = false
+            collectionView.isHidden = true
         }
     }
 }

@@ -80,9 +80,10 @@ extension CartPresenter: CartItemCellDelegate {
                 DispatchQueue.main.async {
                     imageView.image = UIImage(data: data)
                 }
-            case .failure(let error):
-                // TODO: show error
-                debugPrint(error)
+            case .failure:
+                DispatchQueue.main.async {
+                    imageView.image = UIImage(named: "ErrorImage")
+                }
             }
         }
     }

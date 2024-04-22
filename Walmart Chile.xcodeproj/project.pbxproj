@@ -44,6 +44,7 @@
 		60D1B6CA2BD5E5CB00EC2C55 /* Walmart_ChileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6C92BD5E5CB00EC2C55 /* Walmart_ChileTests.swift */; };
 		60D1B6D12BD5E5EA00EC2C55 /* CartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6D02BD5E5EA00EC2C55 /* CartTests.swift */; };
 		60D1B6D32BD5FE6500EC2C55 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 60D1B6D22BD5FE6500EC2C55 /* Localizable.xcstrings */; };
+		60D1B6D82BD6941200EC2C55 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6D72BD6941200EC2C55 /* ErrorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +98,7 @@
 		60D1B6C92BD5E5CB00EC2C55 /* Walmart_ChileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Walmart_ChileTests.swift; sourceTree = "<group>"; };
 		60D1B6D02BD5E5EA00EC2C55 /* CartTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartTests.swift; sourceTree = "<group>"; };
 		60D1B6D22BD5FE6500EC2C55 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		60D1B6D72BD6941200EC2C55 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 				60D1B6792BD2EF7C00EC2C55 /* Cart */,
 				60D1B6742BD2EB1300EC2C55 /* Home */,
 				60D1B6922BD35CB800EC2C55 /* BadgeButton.swift */,
+				60D1B6D72BD6941200EC2C55 /* ErrorView.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -370,6 +373,7 @@
 				60D1B6622BD2E88100EC2C55 /* SceneDelegate.swift in Sources */,
 				60D1B6892BD3030E00EC2C55 /* HomeView.swift in Sources */,
 				60D1B6A92BD41C5E00EC2C55 /* CartView.swift in Sources */,
+				60D1B6D82BD6941200EC2C55 /* ErrorView.swift in Sources */,
 				60D1B67B2BD2EF8600EC2C55 /* Cart.swift in Sources */,
 				60D1B69D2BD39B8500EC2C55 /* CategoriesPresenter.swift in Sources */,
 				60D1B6BA2BD4BF6600EC2C55 /* Mock.swift in Sources */,

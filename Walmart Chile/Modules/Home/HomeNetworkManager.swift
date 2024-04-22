@@ -26,7 +26,7 @@ final class HomeNetworkManager: NetworkManager {
             case .success(let products):
                 completion(.success(products))
             case .failure(let error):
-                debugPrint(error)
+                completion(.failure(error))
             }
         }
     }
