@@ -46,7 +46,7 @@ final class CategoriesViewController: UIViewController {
         presenter.viewDidLoad()
         
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Categories"
+        navigationItem.title = String(localized: "Categories")
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: closeButton)
         
         view.backgroundColor = .secondarySystemBackground

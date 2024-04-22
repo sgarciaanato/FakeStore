@@ -53,7 +53,7 @@ final class HomeViewController: UIViewController {
         
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: cartButton), categoryButton]
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Walmart Chile"
+        navigationItem.title = String(localized: "Walmart")
         
         presenter.viewDidLoad()
     }

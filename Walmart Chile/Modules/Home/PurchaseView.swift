@@ -19,7 +19,7 @@ final class PurchaseView: UIView {
     lazy var successLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Success"
+        label.text = String(localized: "Success")
         label.textAlignment = .center
         return label
     }()

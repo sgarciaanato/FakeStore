@@ -45,7 +45,7 @@ private extension CategoriesPresenter {
             switch result {
             case .success(let categories):
                 self.categories = categories
-                self.categories.insert("Todos", at: 0)
+                self.categories.insert(String(localized: "All"), at: 0)
                 delegate?.reloadData()
             case .failure(let error):
                 // TODO: show error

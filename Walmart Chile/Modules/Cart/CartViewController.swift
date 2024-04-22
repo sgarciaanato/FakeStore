@@ -30,7 +30,7 @@ final class CartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Cart"
+        navigationItem.title = String(localized: "Cart")
     }
     
     override func loadView() {

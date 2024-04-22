@@ -75,7 +75,7 @@ final class CartItemCell: UICollectionViewCell {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(remove), for: .touchUpInside)
-        button.setTitle("Quitar", for: .normal)
+        button.setTitle(String(localized: "Remove"), for: .normal)
         button.setTitleColor(.label, for: .normal)
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.systemBlue.cgColor

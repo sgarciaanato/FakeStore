@@ -50,7 +50,7 @@ final class CartView: UIView {
     
     lazy var totalAmountLabel: UILabel = {
         let label = UILabel()
-        label.text = "Total amount: $\(String(format: "%.2f", delegate.cart.totalAmout))"
+        label.text = String(format: String(localized: "TotalAmout"), arguments: [String(format: "%.2f", delegate.cart.totalAmout)])
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.boldSystemFont(ofSize: 26.0)
         label.textAlignment = .center
@@ -60,7 +60,7 @@ final class CartView: UIView {
     lazy var purchaseButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Purchase", for: .normal)
+        button.setTitle(String(localized: "Purchase"), for: .normal)
         button.setTitleColor(.systemBackground, for: .normal)
         button.addTarget(self, action: #selector(purchase), for: .touchUpInside)
         button.backgroundColor = .systemBlue
@@ -161,11 +161,11 @@ private extension CartView {
         emptyCartImage.isHidden = totalAmount > 0
         collectionView.isHidden = totalAmount <= 0
         if totalAmount > 0  {
-            totalAmountLabel.text = "Total amount: $\(String(format: "%.2f", delegate.cart.totalAmout))"
+            totalAmountLabel.text = String(format: String(localized: "TotalAmout"), arguments: [String(format: "%.2f", delegate.cart.totalAmout)])
             purchaseButton.isEnabled = true
             return
         }
-        totalAmountLabel.text = "Empty cart"
+        totalAmountLabel.text = String(localized: "EmptyCart")
         purchaseButton.isEnabled = false
     }
     

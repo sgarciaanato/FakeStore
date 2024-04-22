@@ -43,6 +43,7 @@
 		60D1B6C22BD5D11B00EC2C55 /* PurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6C12BD5D11B00EC2C55 /* PurchaseView.swift */; };
 		60D1B6CA2BD5E5CB00EC2C55 /* Walmart_ChileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6C92BD5E5CB00EC2C55 /* Walmart_ChileTests.swift */; };
 		60D1B6D12BD5E5EA00EC2C55 /* CartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D1B6D02BD5E5EA00EC2C55 /* CartTests.swift */; };
+		60D1B6D32BD5FE6500EC2C55 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 60D1B6D22BD5FE6500EC2C55 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		60D1B6C72BD5E5CB00EC2C55 /* Walmart ChileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Walmart ChileTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		60D1B6C92BD5E5CB00EC2C55 /* Walmart_ChileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Walmart_ChileTests.swift; sourceTree = "<group>"; };
 		60D1B6D02BD5E5EA00EC2C55 /* CartTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartTests.swift; sourceTree = "<group>"; };
+		60D1B6D22BD5FE6500EC2C55 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 				60D1B66A2BD2E88200EC2C55 /* LaunchScreen.storyboard */,
 				60D1B66D2BD2E88200EC2C55 /* Info.plist */,
 				60D1B6BD2BD5915B00EC2C55 /* Stepper.swift */,
+				60D1B6D22BD5FE6500EC2C55 /* Localizable.xcstrings */,
 			);
 			path = "Walmart Chile";
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
 			);
 			mainGroup = 60D1B6532BD2E88100EC2C55;
 			productRefGroup = 60D1B65D2BD2E88100EC2C55 /* Products */;
@@ -338,6 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				60D1B6B42BD4BEB900EC2C55 /* products.json in Resources */,
+				60D1B6D32BD5FE6500EC2C55 /* Localizable.xcstrings in Resources */,
 				60D1B6B62BD4BEE100EC2C55 /* categories.json in Resources */,
 				60D1B66C2BD2E88200EC2C55 /* LaunchScreen.storyboard in Resources */,
 				60D1B6692BD2E88200EC2C55 /* Assets.xcassets in Resources */,

@@ -65,7 +65,7 @@ final class FeaturedProductCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
         label.font = label.font.withSize(23)
-        label.text = "Destacado"
+        label.text = String(localized: "Featured")
         return label
     }()
     
