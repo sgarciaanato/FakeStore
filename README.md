@@ -22,7 +22,9 @@ Aplicación de prueba técnica en la que intentamos replicar un MVP de tienda el
 * Soporte Light mode y Dark mode
 * Soporte de lenguaje Ingles y Español
 * Animaciones
-  - Agregar un producto al carrito anima la imagen hacia el botón del carrito
+  - Agregar un producto al carrito anima la imagen del producto hacia el botón del carrito
+  - Luego de la animación de la imagen al carrito este salta por un segundo
   - Presionar el botón de más en un producto que no está agregado anima el stepper expandiéndolo y dando visibilidad al contador y al botón de reducir la cantidad
   - Llegar el producto agregado a 0 elimina el producto del carro y reduce el stepper
   - Hacer una compra anima la aparición y desaparición de un mensaje de éxito
+  - Efecto de shimmer al cargar el home
