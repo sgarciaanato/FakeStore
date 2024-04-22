@@ -121,8 +121,8 @@ private extension CartView {
     
     func configureConstraints() {
         NSLayoutConstraint.activate([
-            emptyCartImage.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5),
-            emptyCartImage.heightAnchor.constraint(equalTo: emptyCartImage.widthAnchor),
+            emptyCartImage.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.5),
+            emptyCartImage.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, multiplier: 0.4),
             emptyCartImage.centerXAnchor.constraint(equalTo: centerXAnchor),
             emptyCartImage.centerYAnchor.constraint(equalTo: centerYAnchor),
             
