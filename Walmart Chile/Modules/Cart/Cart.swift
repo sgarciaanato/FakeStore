@@ -67,7 +67,7 @@ extension Cart {
     }
     
     func decrease(product: Product) {
-        if quantityOf(product: product) == 1{
+        if quantityOf(product: product) <= 1{
             items[product] = nil
         } else {
             if !updatedItems.contains(product) {
